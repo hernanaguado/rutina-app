@@ -37,6 +37,7 @@
   .sems { display:flex; gap:8px; margin-bottom:12px; }
   .sem { flex:1; text-align:center; background:var(--card); border:none; border-radius:12px; padding:9px 0; font-size:13px; color:var(--suave); box-shadow:0 1px 3px rgba(120,90,40,.08); cursor:pointer; }
   .sem.on { background:var(--chipOnBg); color:var(--chipOnFg); font-weight:700; }
+  main { padding:10px 12px; }
   .dia-tabs { display:flex; gap:8px; margin-bottom:14px; }
   .dia-tab { flex:1; border:none; border-radius:12px; padding:10px 0; font-size:13px; font-weight:700; cursor:pointer; background:var(--card); color:var(--suave); border-top:4px solid var(--c); }
   .dia-tab.on { background:var(--cc); color:var(--texto); }
@@ -53,11 +54,11 @@
   .delta.same { background:var(--anilloTrack); color:var(--suave); }
   .metaPill { font-size:11px; font-weight:700; color:var(--suave); background:var(--anilloTrack); padding:4px 8px; border-radius:8px; white-space:nowrap; }
   .fila2 { display:flex; align-items:center; gap:8px; margin-top:8px; }
-  .stepper { display:flex; align-items:center; gap:2px; background:var(--stepperBg); border-radius:11px; padding:4px; box-shadow:inset 0 0 0 1px var(--borde); flex:1; }
+  .stepper { display:flex; align-items:center; gap:2px; background:var(--stepperBg); border-radius:11px; padding:4px; box-shadow:inset 0 0 0 1px var(--borde); flex:1; min-width:0; }
   .stepper button { width:38px; height:36px; border:none; border-radius:9px; background:var(--stepperBtn); color:var(--texto); font-size:18px; font-weight:700; cursor:pointer; }
   .stepper input { flex:1; min-width:0; text-align:center; border:none; background:transparent; font-size:17px; font-weight:700; color:var(--texto); }
   .stepper input::placeholder, .reps::placeholder { color:var(--inputPh); font-weight:500; }
-  .reps { width:64px; text-align:center; border:none; border-radius:11px; padding:10px 0; font-size:15px; font-weight:700; background:var(--inputBg); color:var(--inputFg); box-shadow:inset 0 0 0 1px var(--borde); }
+  .reps { width:64px; text-align:center; border:none; border-radius:11px; padding:10px 0; font-size:16px; font-weight:700; background:var(--inputBg); color:var(--inputFg); box-shadow:inset 0 0 0 1px var(--borde); flex-shrink:0; }
   input:focus { outline:2px solid #F6B26B; }
   .guardado { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:var(--verde); color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; }
   .guardado.ver { opacity:1; }
@@ -280,6 +281,7 @@ function render(){
   const ejDia = EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")));
   for (const e of ejDia) {
     if (e.b !== bloqueActual) {
+      if (bloqueActual !== null) html += `</div>`;
       bloqueActual = e.b;
       const [tit, meta] = e.b.split("|");
       html += `<div class="bloque" style="background:${colorBloque(tit)}"><h2>${tit}<span class="meta">${meta||""}</span></h2>`;

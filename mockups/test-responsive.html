@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Test responsive</title>
+<style>body{margin:0;font-family:monospace;padding:10px}iframe{display:block;border:2px solid #999;margin:8px 0}</style>
+</head>
+<body>
+<p>Test responsive: cada iframe carga la app a un ancho de celu.</p>
+<iframe id="w320" width="320" height="900"></iframe>
+<iframe id="w360" width="360" height="900"></iframe>
+<iframe id="w430" width="430" height="900"></iframe>
+<script>
+  for (const id of ["w320","w360","w430"]) {
+    document.getElementById(id).src = "../index.html?v=" + Math.random();
+  }
+</script>
+</body>
+</html>
