@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 3c · Cálido oscuro</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#221A10; color:#F5EAD8; padding:20px 16px 50px; }
+  a { color:inherit; }
+  .wrap { max-width:430px; margin:0 auto; }
+
+  .saludo { display:flex; align-items:center; gap:12px; }
+  .saludo h1 { font-size:20px; }
+  .saludo .sub { font-size:12.5px; color:#B3A184; }
+  .anillo { margin-left:auto; width:56px; height:56px; border-radius:50%; background:conic-gradient(#F6B26B 0 65%, #3A2E1C 65% 100%); display:grid; place-items:center; }
+  .anillo b { width:42px; height:42px; border-radius:50%; background:#221A10; display:grid; place-items:center; font-size:12.5px; }
+
+  .faseNav { display:flex; align-items:center; justify-content:space-between; background:#2E2315; border-radius:14px; padding:10px 14px; margin:16px 0 10px; font-size:13.5px; font-weight:600; }
+  .faseNav .flechas { color:#C9A96B; font-size:17px; cursor:pointer; }
+  .sems { display:flex; gap:8px; margin-bottom:16px; }
+  .sem { flex:1; text-align:center; background:#2E2315; border-radius:12px; padding:9px 0; font-size:13px; color:#B3A184; }
+  .sem.on { background:#FFD966; color:#241A0F; font-weight:800; }
+
+  .tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .tab { flex:1; border-radius:12px; padding:10px 0; text-align:center; font-size:13px; font-weight:700; background:#2E2315; color:#B3A184; border-top:4px solid var(--c); }
+  .tab.on { color:#F5EAD8; background:var(--cf); }
+
+  .bloque { border-radius:16px; padding:14px; margin-bottom:12px; background:var(--cf); }
+  .bloque .tit { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  .bloque .tit b { font-size:13.5px; }
+  .bloque .tit span { font-size:11px; opacity:.55; }
+
+  .ejer { background:rgba(0,0,0,.28); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+  .ejer:last-child { margin-bottom:0; }
+  .ejer .info { flex:1; min-width:0; }
+  .ejer .nom { font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ejer .cons { font-size:11px; color:#B3A184; }
+  .ejer input { width:64px; text-align:center; border:none; border-radius:9px; padding:8px 0; font-size:14px; font-weight:700; background:#F5EAD8; color:#241A0F; }
+  .ejer input::placeholder { color:#B3A184; font-weight:500; }
+  .chk { width:20px; height:20px; border-radius:7px; border:2px solid #6B5940; flex-shrink:0; }
+  .ejer.ok .chk { background:#6FCF97; border-color:#6FCF97; }
+  .ejer.ok .nom { text-decoration:line-through; color:#B3A184; }
+  .delta { font-size:10px; font-weight:700; }
+  .delta.up { color:#6FCF97; }
+  .bisagra { font-size:11.5px; background:#3A2A14; border-radius:10px; padding:8px 10px; margin-bottom:10px; color:#F6B26B; }
+
+  .pie { margin-top:22px; font-size:11.5px; color:#6B5940; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="saludo">
+    <div><h1>Día A 💪</h1><div class="sub">Prensa + empuje · Semanas 3-4</div></div>
+    <div class="anillo"><b>5/8</b></div>
+  </div>
+
+  <div class="faseNav"><span class="flechas">‹</span> <span>Semanas 3-4 · Mes 1</span> <span class="flechas">›</span></div>
+  <div class="sems"><div class="sem">Sem 3</div><div class="sem on">Sem 4</div></div>
+
+  <div class="tabs">
+    <div class="tab on" style="--c:#FFD966;--cf:#3A2A14">Día A</div>
+    <div class="tab" style="--c:#F6B26B;--cf:#3A2A14">Día B</div>
+    <div class="tab" style="--c:#E06666;--cf:#3A2A14">Día C</div>
+  </div>
+
+  <div class="bisagra">🟠 Antes del hip thrust: bisagra 3 × 5 liviano (sem 3-6)</div>
+
+  <div class="bloque" style="--cf:#3A2A14">
+    <div class="tit"><b>Principal</b><span>2-3 min</span></div>
+    <div class="ejer ok">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">Prensa de piernas</div><div class="cons">4 × 6 · <span class="delta up">⬆️ +2,5 vs sem 3</span></div></div>
+      <input value="62,5">
+    </div>
+    <div class="ejer">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">Hip thrust</div><div class="cons">4 × 6 · ➖ igual que sem 3</div></div>
+      <input placeholder="80">
+    </div>
+  </div>
+
+  <div class="bloque" style="--cf:#3A2A14">
+    <div class="tit"><b>Superserie 1</b><span>90 s</span></div>
+    <div class="ejer ok">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">1A · Press de banca c/ mancuernas</div><div class="cons">4 × 6 · <span class="delta up">⬆️ +2</span></div></div>
+      <input value="24">
+    </div>
+    <div class="ejer">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">1B · Remo a una mano en banco</div><div class="cons">3 × 8-12 por lado</div></div>
+      <input placeholder="20">
+    </div>
+  </div>
+
+  <div class="bloque" style="--cf:#3A2A14">
+    <div class="tit"><b>Prevención · circuito</b><span>60 s</span></div>
+    <div class="ejer">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">Aductores en máquina</div><div class="cons">2 × 12-15</div></div>
+      <input placeholder="30">
+    </div>
+    <div class="ejer">
+      <div class="chk"></div>
+      <div class="info"><div class="nom">Dead bug</div><div class="cons">3 × 10 por lado</div></div>
+      <input placeholder="—">
+    </div>
+  </div>
+
+  <div class="pie">Variante C · cálido en versión oscura · <a href="index.html">← opciones</a></div>
+</div>
+</body>
+</html>

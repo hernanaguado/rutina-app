@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 3b · Cálido con botones +/−</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#FDF6EA; color:#3B2F1E; padding:20px 16px 50px; }
+  a { color:inherit; }
+  .wrap { max-width:430px; margin:0 auto; }
+
+  .saludo { display:flex; align-items:center; gap:12px; }
+  .saludo h1 { font-size:20px; }
+  .saludo .sub { font-size:12.5px; color:#9A8A6E; }
+  .anillo { margin-left:auto; width:56px; height:56px; border-radius:50%; background:conic-gradient(#F6B26B 0 65%, #F0E4CE 65% 100%); display:grid; place-items:center; }
+  .anillo b { width:42px; height:42px; border-radius:50%; background:#FDF6EA; display:grid; place-items:center; font-size:12.5px; }
+
+  .faseNav { display:flex; align-items:center; justify-content:space-between; background:#fff; border-radius:14px; padding:10px 14px; margin:16px 0 10px; box-shadow:0 1px 3px rgba(120,90,40,.10); font-size:13.5px; font-weight:600; }
+  .faseNav .flechas { color:#C9A96B; font-size:17px; cursor:pointer; }
+  .sems { display:flex; gap:8px; margin-bottom:16px; }
+  .sem { flex:1; text-align:center; background:#fff; border-radius:12px; padding:9px 0; font-size:13px; color:#9A8A6E; box-shadow:0 1px 3px rgba(120,90,40,.08); }
+  .sem.on { background:#3B2F1E; color:#FFD966; font-weight:700; }
+
+  .tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .tab { flex:1; border-radius:12px; padding:10px 0; text-align:center; font-size:13px; font-weight:700; background:#fff; color:#9A8A6E; box-shadow:0 1px 3px rgba(120,90,40,.08); border-top:4px solid var(--c); }
+  .tab.on { color:#3B2F1E; background:var(--cc); }
+
+  .bloque { border-radius:16px; padding:14px; margin-bottom:12px; background:var(--cc); }
+  .bloque .tit { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  .bloque .tit b { font-size:13.5px; }
+  .bloque .tit span { font-size:11px; opacity:.65; }
+
+  .ejer { background:rgba(255,255,255,.8); border-radius:12px; padding:11px 12px; margin-bottom:7px; }
+  .ejer:last-child { margin-bottom:0; }
+  .fila1 { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .ejer .nom { flex:1; font-size:13.5px; font-weight:600; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .delta { font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:99px; white-space:nowrap; }
+  .delta.up { background:#E8F5EE; color:#2E7D52; }
+  .delta.same { background:#F0E4CE; color:#9A8A6E; }
+  .fila2 { display:flex; align-items:center; gap:8px; }
+  .stepper { display:flex; align-items:center; gap:2px; background:#fff; border-radius:11px; padding:4px; box-shadow:inset 0 0 0 1px #EADFC8; flex:1; }
+  .stepper button { width:36px; height:34px; border:none; border-radius:9px; background:#FDF6EA; color:#3B2F1E; font-size:17px; font-weight:700; cursor:pointer; }
+  .stepper b { flex:1; text-align:center; font-size:17px; font-variant-numeric:tabular-nums; }
+  .stepper small { display:block; font-size:9px; color:#B0A488; font-weight:400; }
+  .cons { font-size:11px; color:#9A8A6E; min-width:74px; text-align:right; }
+  .pie { margin-top:22px; font-size:11.5px; color:#C9BCA0; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="saludo">
+    <div><h1>Día A 💪</h1><div class="sub">Prensa + empuje · Semanas 3-4</div></div>
+    <div class="anillo"><b>5/8</b></div>
+  </div>
+
+  <div class="faseNav"><span class="flechas">‹</span> <span>Semanas 3-4 · Mes 1</span> <span class="flechas">›</span></div>
+  <div class="sems"><div class="sem">Sem 3</div><div class="sem on">Sem 4</div></div>
+
+  <div class="tabs">
+    <div class="tab on" style="--c:#FFD966;--cc:#FFF2CC">Día A</div>
+    <div class="tab" style="--c:#F6B26B;--cc:#FCE5CD">Día B</div>
+    <div class="tab" style="--c:#E06666;--cc:#F4CCCC">Día C</div>
+  </div>
+
+  <div class="bloque" style="--cc:#FFF2CC">
+    <div class="tit"><b>Principal</b><span>2-3 min</span></div>
+    <div class="ejer">
+      <div class="fila1"><div class="nom">Prensa de piernas</div><span class="delta up">⬆️ +2,5</span></div>
+      <div class="fila2">
+        <div class="stepper"><button>−</button><b>62,5<small>base 60</small></b><button>+</button></div>
+        <div class="cons">4 × 6</div>
+      </div>
+    </div>
+    <div class="ejer">
+      <div class="fila1"><div class="nom">Hip thrust</div><span class="delta same">➖ =80</span></div>
+      <div class="fila2">
+        <div class="stepper"><button>−</button><b style="color:#B0A488">80<small>base 80</small></b><button>+</button></div>
+        <div class="cons">4 × 6</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque" style="--cc:#FCE5CD">
+    <div class="tit"><b>Superserie 1</b><span>90 s</span></div>
+    <div class="ejer">
+      <div class="fila1"><div class="nom">1A · Press de banca c/ mancuernas</div><span class="delta up">⬆️ +2</span></div>
+      <div class="fila2">
+        <div class="stepper"><button>−</button><b>24<small>base 22</small></b><button>+</button></div>
+        <div class="cons">4 × 6</div>
+      </div>
+    </div>
+    <div class="ejer">
+      <div class="fila1"><div class="nom">1B · Remo a una mano en banco</div></div>
+      <div class="fila2">
+        <div class="stepper"><button>−</button><b style="color:#B0A488">20<small>base 20</small></b><button>+</button></div>
+        <div class="cons">3 × 8-12</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pie">Variante B · cálido + botones +/− (del mockup 4) · <a href="index.html">← opciones</a></div>
+</div>
+</body>
+</html>

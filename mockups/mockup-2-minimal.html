@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 2 · Minimalista</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#FBFBF9; color:#191919; padding:26px 20px 60px; }
+  a { color:inherit; }
+  .wrap { max-width:430px; margin:0 auto; }
+
+  .diaSem { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#A6A6A0; }
+  h1 { font-size:26px; font-weight:700; letter-spacing:-.02em; margin:4px 0 2px; }
+  .sub { font-size:13.5px; color:#8B8B84; }
+
+  .navega { display:flex; align-items:center; gap:14px; margin:20px 0 6px; font-size:14px; }
+  .navega .flecha { cursor:pointer; color:#B5B5AE; }
+  .navega .fase { font-weight:600; }
+  .navega .lugar { margin-left:auto; color:#A6A6A0; font-size:12.5px; }
+
+  .sems { display:flex; gap:0; border:1px solid #E4E4DE; border-radius:10px; overflow:hidden; margin:12px 0 26px; }
+  .sems span { flex:1; text-align:center; padding:8px 0; font-size:13px; color:#8B8B84; cursor:pointer; }
+  .sems .on { background:#191919; color:#fff; }
+
+  .grupo { margin-bottom:22px; }
+  .grupo > .etq { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#B0B0A8; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+  .grupo > .etq::after { content:""; flex:1; height:1px; background:#ECECE6; }
+
+  .fila { display:flex; align-items:baseline; gap:12px; padding:13px 2px; border-bottom:1px solid #F0F0EA; }
+  .punto { width:8px; height:8px; border-radius:50%; background:var(--c,#D4B106); flex-shrink:0; align-self:center; }
+  .fila .nom { flex:1; font-size:15px; }
+  .fila .nom small { display:block; font-size:11.5px; color:#A6A6A0; font-weight:400; margin-top:1px; }
+  .reps { font-size:12px; color:#B0B0A8; white-space:nowrap; }
+  .carga { font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; min-width:74px; text-align:right; }
+  .carga em { font-style:normal; font-size:11px; color:#B0B0A8; font-weight:400; display:block; text-align:right; }
+  .hecho { color:#C9C9C2; text-decoration:line-through; }
+  .delta { font-size:11.5px; }
+  .delta.up { color:#3D8B5F; } .delta.down { color:#C77B2E; }
+
+  .pie { margin-top:30px; font-size:11.5px; color:#C9C9C2; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="diaSem">Martes · Semana 4 de 6</div>
+  <h1>Día A</h1>
+  <div class="sub">Prensa + empuje · 8 ejercicios</div>
+
+  <div class="navega">
+    <span class="flecha">‹</span><span class="fase">Semanas 3-4</span><span class="flecha">›</span>
+    <span class="lugar">3 datos cargados</span>
+  </div>
+  <div class="sems"><span>Sem 3</span><span class="on">Sem 4</span></div>
+
+  <div class="grupo">
+    <div class="etq">Principal · 2-3 min</div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">Prensa de piernas <small>4 × 6</small></div>
+      <span class="reps">6 reps</span>
+      <div class="carga">62,5<em>base 60</em></div>
+    </div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom hech">Hip thrust <small>4 × 6</small></div>
+      <span class="reps">6 reps</span>
+      <div class="carga hecho">80<em><span class="delta up">➖ igual</span></em></div>
+    </div>
+  </div>
+
+  <div class="grupo">
+    <div class="etq">Superserie 1 · 90 s</div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">1A · Press de banca con mancuernas <small>4 × 6</small></div>
+      <span class="reps">6 reps</span>
+      <div class="carga">22<em>base 22</em></div>
+    </div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">1B · Remo a una mano en el banco <small>3 × 8-12 por lado</small></div>
+      <span class="reps">8-12</span>
+      <div class="carga">20<em>base 20</em></div>
+    </div>
+  </div>
+
+  <div class="grupo">
+    <div class="etq">Superserie 2 · 90 s</div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">2A · Jalón al pecho <small>3 × 8-12</small></div>
+      <span class="reps">8-12</span>
+      <div class="carga">45<em>base 42,5</em></div>
+    </div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">2B · Elevaciones laterales <small>3 × 12-15</small></div>
+      <span class="reps">12-15</span>
+      <div class="carga">8<em>base 8</em></div>
+    </div>
+  </div>
+
+  <div class="grupo">
+    <div class="etq">Prevención · circuito · 60 s</div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">Aductores en máquina <small>2 × 12-15</small></div>
+      <span class="reps">12-15</span>
+      <div class="carga">30<em>base 30</em></div>
+    </div>
+    <div class="fila">
+      <div class="punto" style="--c:#D4B106"></div>
+      <div class="nom">Dead bug <small>3 × 10 por lado</small></div>
+      <span class="reps">10</span>
+      <div class="carga">—</div>
+    </div>
+  </div>
+
+  <div class="pie">Mockup 2 · minimalista · <a href="index.html">← volver a las opciones</a></div>
+</div>
+</body>
+</html>

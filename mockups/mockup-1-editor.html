@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 1 · Editor de planes</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#EEF1F5; color:#1F2430; display:flex; min-height:100vh; }
+  a { color:inherit; }
+
+  /* ── Sidebar oscura (como la captura) ── */
+  .side { width:72px; background:#161B26; color:#9AA3B2; display:flex; flex-direction:column; align-items:center; padding:18px 0; gap:8px; flex-shrink:0; }
+  .side .logo { width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#FFD966,#F6B26B); display:grid; place-items:center; font-size:20px; margin-bottom:18px; }
+  .side .ico { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:19px; cursor:pointer; }
+  .side .ico.on { background:rgba(255,217,102,.15); color:#FFD966; }
+  .side .spacer { flex:1; }
+
+  /* ── Centro ── */
+  .main { flex:1; padding:22px 26px; max-width:640px; }
+  .cab { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .cab h1 { font-size:19px; }
+  .cab .sub { font-size:12.5px; color:#7A8494; margin-top:2px; }
+  .btnFase { border:1px solid #D9DEE7; background:#fff; border-radius:10px; padding:7px 12px; font-size:13px; cursor:pointer; }
+  .chips { display:flex; gap:8px; margin:14px 0 4px; }
+  .chip { border:1px solid #D9DEE7; background:#fff; border-radius:99px; padding:6px 14px; font-size:13px; color:#5B6472; cursor:pointer; }
+  .chip.on { background:#1F2430; color:#fff; border-color:#1F2430; }
+  .tabs { display:flex; gap:8px; margin:14px 0 18px; }
+  .tab { flex:1; text-align:center; padding:10px 0; border-radius:12px; background:#fff; border:1px solid #D9DEE7; font-size:13.5px; font-weight:600; cursor:pointer; color:#5B6472; }
+  .tab.on { color:#1F2430; box-shadow:inset 0 -3px 0 var(--c,#FFD966); }
+
+  /* ── Tarjetas de actividades (como la captura) ── */
+  .card { background:#fff; border-radius:14px; padding:13px 14px; display:flex; align-items:center; gap:12px; margin-bottom:9px; box-shadow:0 1px 2px rgba(20,30,50,.06); cursor:pointer; border:1.5px solid transparent; }
+  .card.sel { border-color:#FFD966; }
+  .chk { width:22px; height:22px; border-radius:50%; border:2px solid #C9D0DB; flex-shrink:0; display:grid; place-items:center; font-size:12px; color:#fff; }
+  .card.ok .chk { background:#4CAF7D; border-color:#4CAF7D; }
+  .card.ok .nom { text-decoration:line-through; color:#9AA3B2; }
+  .info { flex:1; min-width:0; }
+  .bloque { font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:#98A1B0; margin-bottom:2px; }
+  .nom { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .meta { background:var(--lc,#FFF2CC); color:#8A6D1A; font-size:11.5px; font-weight:700; border-radius:8px; padding:4px 8px; }
+  .kg { width:74px; text-align:center; border:1px solid #D9DEE7; border-radius:10px; padding:7px 0; font-size:14px; font-weight:700; }
+  .kg small { display:block; font-weight:400; font-size:9.5px; color:#98A1B0; }
+
+  /* ── Panel de detalle (como la captura) ── */
+  .panel { width:330px; background:#fff; margin:22px 26px 22px 0; border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(20,30,50,.08); align-self:flex-start; position:sticky; top:22px; }
+  .panel h2 { font-size:16px; margin-bottom:2px; }
+  .panel .sub { font-size:12px; color:#7A8494; margin-bottom:12px; }
+  .video { background:linear-gradient(135deg,#232A38,#3A445A); border-radius:12px; height:130px; display:grid; place-items:center; color:#FFD966; font-size:34px; margin-bottom:14px; }
+  .serie { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #F0F2F6; font-size:13.5px; }
+  .serie:last-child { border:none; }
+  .serie .n { width:20px; height:20px; border-radius:6px; background:#FFD966; color:#6B5410; font-size:11px; font-weight:800; display:grid; place-items:center; }
+  .serie .dato { flex:1; }
+  .serie .dato b { font-size:15px; }
+  .serie .dato span { color:#98A1B0; font-size:12px; }
+  .cmp { font-size:12px; background:#E8F5EE; color:#2E7D52; border-radius:8px; padding:6px 10px; margin-top:10px; }
+  .pie { margin-top:14px; font-size:11.5px; color:#B0B7C3; text-align:center; }
+
+  @media (max-width:900px){
+    body { display:block; }
+    .side { width:100%; flex-direction:row; justify-content:center; padding:8px; }
+    .side .logo { margin:0 8px 0 0; }
+    .panel { display:none; }
+    .main { padding:16px; max-width:none; }
+  }
+</style>
+</head>
+<body>
+  <aside class="side">
+    <div class="logo">🏋️</div>
+    <div class="ico on">📋</div>
+    <div class="ico">📈</div>
+    <div class="ico">🗓️</div>
+    <div class="spacer"></div>
+    <div class="ico">🌙</div>
+    <div class="ico">⚙️</div>
+  </aside>
+
+  <div class="main">
+    <div class="cab">
+      <div>
+        <h1>Editor de rutina</h1>
+        <div class="sub">Semanas 3-4 · Mes 1 · fuerza</div>
+      </div>
+      <button class="btnFase">‹ Semanas 3-4 ›</button>
+    </div>
+
+    <div class="chips">
+      <span class="chip">Sem 3</span><span class="chip on">Sem 4</span>
+      <span style="margin-left:auto" class="chip">⟲ Semana anterior</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab on" style="--c:#FFD966">Día A</div>
+      <div class="tab" style="--c:#F6B26B">Día B</div>
+      <div class="tab" style="--c:#E06666">Día C</div>
+    </div>
+
+    <div class="bloque" style="font-size:11px;color:#98A1B0;margin-bottom:8px">PRINCIPAL · 2-3 MIN DE DESCANSO</div>
+    <div class="card ok">
+      <div class="chk">✓</div>
+      <div class="info"><div class="bloque">Principal</div><div class="nom">Prensa de piernas</div></div>
+      <span class="meta" style="--lc:#FFF2CC">4 × 6</span>
+      <div class="kg">62,5<small>base 60</small></div>
+    </div>
+    <div class="card">
+      <div class="chk"></div>
+      <div class="info"><div class="bloque">Principal</div><div class="nom">Hip thrust</div></div>
+      <span class="meta" style="--lc:#FCE5CD">4 × 6</span>
+      <div class="kg">80<small>base 80</small></div>
+    </div>
+
+    <div class="bloque" style="font-size:11px;color:#98A1B0;margin:14px 0 8px">SUPERSERIE 1 · 90 S AL CERRAR EL PAR</div>
+    <div class="card ok">
+      <div class="chk">✓</div>
+      <div class="info"><div class="bloque">Superserie 1</div><div class="nom">1A · Press de banca con mancuernas</div></div>
+      <span class="meta" style="--lc:#FFF2CC">4 × 6</span>
+      <div class="kg">22<small>base 22</small></div>
+    </div>
+    <div class="card">
+      <div class="chk"></div>
+      <div class="info"><div class="bloque">Superserie 1</div><div class="nom">1B · Remo a una mano en el banco</div></div>
+      <span class="meta" style="--lc:#FFF2CC">3 × 8-12</span>
+      <div class="kg">20<small>base 20</small></div>
+    </div>
+
+    <div class="bloque" style="font-size:11px;color:#98A1B0;margin:14px 0 8px">PREVENCIÓN · CIRCUITO · 60 S AL CERRAR LA RONDA</div>
+    <div class="card">
+      <div class="chk"></div>
+      <div class="info"><div class="bloque">Prevención</div><div class="nom">Aductores en máquina</div></div>
+      <span class="meta" style="--lc:#FFF2CC">2 × 12-15</span>
+      <div class="kg">30<small>base 30</small></div>
+    </div>
+    <div class="pie">Mockup 1 · estilo "editor de planes" · <a href="index.html">← volver a las opciones</a></div>
+  </div>
+
+  <aside class="panel">
+    <h2>Prensa de piernas</h2>
+    <div class="sub">Serie actual: 3 de 4 · objetivo 4 × 6</div>
+    <div class="video">▶</div>
+    <div class="serie"><div class="n">1</div><div class="dato"><b>60 kg × 6</b> <span>· hecha ✓</span></div></div>
+    <div class="serie"><div class="n">2</div><div class="dato"><b>60 kg × 6</b> <span>· hecha ✓</span></div></div>
+    <div class="serie"><div class="n">3</div><div class="dato"><b>60 kg × 6</b> <span>· hecha ✓</span></div></div>
+    <div class="serie"><div class="n">4</div><div class="dato"><b>62,5 kg × 6</b> <span>· en curso</span></div></div>
+    <div class="cmp">⬆️ Subiste 2,5 kg vs semana 3 (60)</div>
+  </aside>
+</body>
+</html>

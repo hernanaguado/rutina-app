@@ -6,68 +6,87 @@
 <title>Mi rutina</title>
 <style>
   :root {
-    --bg:#ffffff; --texto:#222; --borde:#ddd; --card:#ffffff; --input:#fafafa;
-    --suave:#555; --verde:#2e7d32; --alerta:#b35900;
+    --bg:#FDF6EA; --texto:#3B2F1E; --suave:#9A8A6E; --borde:#EADFC8;
+    --card:#FFFFFF; --anilloTrack:#F0E4CE; --stepperBg:#FFFFFF; --stepperBtn:#FDF6EA;
+    --chipOnBg:#3B2F1E; --chipOnFg:#FFD966; --inputBg:#FFFFFF; --inputFg:#3B2F1E; --inputPh:#C9BCA0;
+    --verde:#2E7D52; --alerta:#B35900;
   }
   [data-tema="oscuro"] {
-    --bg:#141414; --texto:#eee; --borde:#3a3a3a; --card:#1e1e1e; --input:#262626;
-    --suave:#aaa; --verde:#66bb6a; --alerta:#ffb74d;
+    --bg:#221A10; --texto:#F5EAD8; --suave:#B3A184; --borde:#4A3A22;
+    --card:#2E2315; --anilloTrack:#3A2E1C; --stepperBg:rgba(0,0,0,.28); --stepperBtn:#1A140B;
+    --chipOnBg:#FFD966; --chipOnFg:#241A0F; --inputBg:#F5EAD8; --inputFg:#241A0F; --inputPh:#B3A184;
+    --verde:#6FCF97; --alerta:#FFB74D;
   }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { margin:0; font-family:system-ui,-apple-system,sans-serif; color:var(--texto); background:var(--bg); padding-bottom:80px; transition:background .2s,color .2s; }
-  header { padding:12px 16px; position:sticky; top:0; background:var(--bg); z-index:10; border-bottom:1px solid var(--borde); }
-  h1 { font-size:18px; margin:0 0 8px; display:flex; justify-content:space-between; align-items:center; }
-  .chips { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-  .chip { border:1px solid var(--borde); background:var(--card); color:var(--texto); border-radius:20px; padding:6px 13px; font-size:14px; cursor:pointer; }
-  .chip.on { background:#222; color:#fff; border-color:#222; }
-  [data-tema="oscuro"] .chip.on { background:#eee; color:#111; border-color:#eee; }
-  .chip.semana.on { background:#e06666; border-color:#e06666; color:#fff !important; }
-  main { padding:10px 12px; }
-  .dia-tabs { display:flex; gap:8px; margin-bottom:10px; }
-  .dia-tab { flex:1; border:none; border-radius:10px; padding:10px 0; font-size:14px; font-weight:700; cursor:pointer; color:#222; }
-  .bloque { border-radius:12px; padding:10px 12px; margin-bottom:12px; border:1px solid var(--borde); }
-  .bloque h2 { font-size:13px; margin:0 0 8px; font-weight:700; }
-  .bloque .meta { font-weight:400; color:var(--suave); display:block; font-size:12px; margin-top:2px; }
-  .ej { background:var(--card); border:1px solid var(--borde); border-radius:10px; padding:8px 10px; margin-bottom:8px; }
-  .ej-top { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-  .ej a { color:#0563c1; text-decoration:none; font-weight:600; font-size:14px; }
-  .ej .target { font-size:12px; color:var(--suave); white-space:nowrap; }
-  .inputs { display:flex; gap:8px; margin-top:8px; align-items:flex-start; }
-  .inputs label { font-size:12px; color:var(--suave); display:flex; flex-direction:column; gap:2px; flex:1; }
-  .inputs input { width:100%; border:1px solid var(--borde); border-radius:8px; padding:8px; font-size:16px; background:var(--input); color:var(--texto); }
-  .inputs input:focus { outline:2px solid #ffb74d; }
-  .cmp { font-size:12px; margin-top:6px; color:var(--suave); min-height:15px; }
-  .cmp.up { color:var(--verde); font-weight:600; }
-  .cmp.down { color:var(--alerta); font-weight:600; }
+  header { padding:18px 16px 12px; }
+  .saludo { display:flex; align-items:center; gap:12px; }
+  h1 { font-size:20px; margin:0; }
+  .sub { font-size:12.5px; color:var(--suave); }
+  .anillo { margin-left:auto; width:56px; height:56px; border-radius:50%; display:grid; place-items:center; }
+  .anillo b { width:42px; height:42px; border-radius:50%; background:var(--bg); display:grid; place-items:center; font-size:12.5px; }
+  .faseNav { display:flex; align-items:center; gap:10px; background:var(--card); border-radius:14px; padding:10px 14px; margin:16px 0 10px; box-shadow:0 1px 3px rgba(120,90,40,.10); font-size:13.5px; font-weight:600; }
+  .flecha { border:none; background:transparent; color:var(--suave); font-size:18px; cursor:pointer; padding:0 2px; }
+  .faseNav .tag { margin-left:auto; font-size:11px; background:var(--anilloTrack); color:var(--suave); padding:3px 9px; border-radius:99px; white-space:nowrap; }
+  .sems { display:flex; gap:8px; margin-bottom:12px; }
+  .sem { flex:1; text-align:center; background:var(--card); border:none; border-radius:12px; padding:9px 0; font-size:13px; color:var(--suave); box-shadow:0 1px 3px rgba(120,90,40,.08); cursor:pointer; }
+  .sem.on { background:var(--chipOnBg); color:var(--chipOnFg); font-weight:700; }
+  .dia-tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .dia-tab { flex:1; border:none; border-radius:12px; padding:10px 0; font-size:13px; font-weight:700; cursor:pointer; background:var(--card); color:var(--suave); border-top:4px solid var(--c); }
+  .dia-tab.on { background:var(--cc); color:var(--texto); }
+  .bloque { border-radius:16px; padding:14px; margin-bottom:12px; }
+  .bloque h2 { font-size:13.5px; margin:0 0 8px; display:flex; justify-content:space-between; align-items:baseline; }
+  .bloque .meta { font-weight:400; font-size:11px; opacity:.65; }
+  .ej { background:rgba(255,255,255,.8); border-radius:12px; padding:11px 12px; margin-bottom:7px; }
+  [data-tema="oscuro"] .ej { background:rgba(0,0,0,.28); }
+  .fila1 { display:flex; align-items:center; gap:8px; }
+  .ej a { color:var(--texto); text-decoration:none; font-weight:600; font-size:13.5px; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .delta { font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:99px; white-space:nowrap; }
+  .delta.up { background:rgba(46,125,82,.14); color:var(--verde); }
+  .delta.down { background:rgba(179,89,0,.12); color:var(--alerta); }
+  .delta.same { background:var(--anilloTrack); color:var(--suave); }
+  .fila2 { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .stepper { display:flex; align-items:center; gap:2px; background:var(--stepperBg); border-radius:11px; padding:4px; box-shadow:inset 0 0 0 1px var(--borde); flex:1; }
+  .stepper button { width:38px; height:36px; border:none; border-radius:9px; background:var(--stepperBtn); color:var(--texto); font-size:18px; font-weight:700; cursor:pointer; }
+  .stepper input { flex:1; min-width:0; text-align:center; border:none; background:transparent; font-size:17px; font-weight:700; color:var(--texto); }
+  .stepper input::placeholder, .reps::placeholder { color:var(--inputPh); font-weight:500; }
+  .reps { width:64px; text-align:center; border:none; border-radius:11px; padding:10px 0; font-size:15px; font-weight:700; background:var(--inputBg); color:var(--inputFg); box-shadow:inset 0 0 0 1px var(--borde); }
+  input:focus { outline:2px solid #F6B26B; }
   .guardado { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:var(--verde); color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; }
   .guardado.ver { opacity:1; }
-  .acciones { display:flex; gap:8px; padding:8px 12px; }
-  .acciones button { flex:1; border:1px solid var(--borde); background:var(--card); color:var(--texto); border-radius:10px; padding:9px 0; font-size:13px; cursor:pointer; }
-  .aviso { background:#fff8e1; border:1px solid #ffd54f; border-radius:10px; padding:8px 12px; font-size:13px; margin-bottom:10px; color:#5d4037; }
-  [data-tema="oscuro"] .aviso { background:rgba(255,213,79,.1); color:#ffd54f; }
+  .acciones { display:flex; gap:8px; margin-top:2px; }
+  .acciones button { flex:1; border:1px solid var(--borde); background:var(--card); color:var(--texto); border-radius:10px; padding:9px 0; font-size:12.5px; cursor:pointer; }
+  .aviso { background:#FCE5CD; border-radius:10px; padding:8px 10px; font-size:11.5px; margin-bottom:10px; color:#8A5A1E; }
+  [data-tema="oscuro"] .aviso { background:rgba(246,178,107,.12); color:#F6B26B; }
   .pie { font-size:12px; color:var(--suave); padding:0 16px; }
 </style>
 </head>
 <body>
 <header>
-  <h1><span>💪 Mi rutina</span><button class="chip" id="temaBtn" onclick="toggleTema()" title="Cambiar tema">🌙</button></h1>
-  <div class="chips">
-    <button class="chip" id="fasePrev" title="" onclick="setFase(iFase-1)">‹</button>
-    <span class="chip on" id="faseLbl" style="cursor:default"></span>
-    <button class="chip" id="faseNext" title="" onclick="setFase(iFase+1)">›</button>
-    <span style="width:8px"></span>
-    <span id="semanas" class="chips"></span>
+  <div class="saludo">
+    <div>
+      <h1 id="titDia">💪</h1>
+      <div class="sub" id="subDia"></div>
+    </div>
+    <div class="anillo" id="anillo"><b id="anilloTxt"></b></div>
+    <button class="sem" id="temaBtn" style="flex:0;padding:8px 10px" onclick="toggleTema()" title="Cambiar tema">🌙</button>
   </div>
-</header>
-<div class="acciones">
-  <button onclick="traerAnterior()">⤵ Traer semana anterior</button>
-  <button onclick="exportar()">⬇ Respaldo</button>
-  <button onclick="document.getElementById('imp').click()">⬆ Cargar</button>
-</div>
+  <div class="faseNav">
+    <button class="flecha" id="fasePrev" title="" onclick="setFase(iFase-1)">‹</button>
+    <span id="faseLbl"></span>
+    <button class="flecha" id="faseNext" title="" onclick="setFase(iFase+1)">›</button>
+    <span class="tag" id="faseTag"></span>
+  </div>
+  <div class="sems" id="semanas"></div>
+  <div class="acciones">
+    <button onclick="traerAnterior()">⤵ Semana anterior</button>
+    <button onclick="exportar()">⬇ Respaldo</button>
+    <button onclick="document.getElementById('imp').click()">⬆ Cargar</button>
+  </div>
   <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
-</div>
+</header>
 <main id="app"></main>
-<p class="pie">Tocá el nombre del ejercicio para ver el video. El kg de la semana anterior aparece como base gris: si cargás menos o más, te aviso. Todo se guarda solo en este celular.</p>
+<p class="pie">Tocá el nombre del ejercicio para ver el video. − y + mueven el peso de a 2,5 kg (también podés escribirlo). El peso de la semana anterior aparece gris como base. Todo se guarda solo en este celular.</p>
 <div class="guardado" id="guardado">Guardado ✓</div>
 
 <script>
@@ -122,6 +141,8 @@ const $ = id => document.getElementById(id);
 const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const kOf = id => `${id}.s${semana}`;
 const num = v => parseFloat(String(v).replace(",", "."));
+const fmt = v => v.toLocaleString("es-AR");
+const oscuro = () => document.documentElement.dataset.tema === "oscuro";
 function datosEnFase(f){
   const F = FASES.find(x=>x.id===f); let n = 0;
   for (const e of EJ) for (const s of F.sems) {
@@ -137,23 +158,50 @@ function baseKg(id, s){
 }
 function textoCmp(id, v){
   const base = baseKg(id, semana);
-  if (!base) return { txt:"", cls:"" };
-  if (v === "" || v === null) return { txt:`Base sem ${base.sem}: ${base.kg} kg`, cls:"" };
+  if (!base) return { txt:"", full:"", cls:"" };
+  if (v === "" || v === null) return { txt:"", full:`Base sem ${base.sem}: ${fmt(base.kg)} kg`, cls:"" };
   const x = num(v);
-  if (isNaN(x)) return { txt:"", cls:"" };
-  if (x > base.kg) return { txt:`⬆️ Subiste ${(x-base.kg).toLocaleString("es-AR")} kg vs sem ${base.sem} (${base.kg})`, cls:"up" };
-  if (x < base.kg) return { txt:`⚠️ Bajaste ${(base.kg-x).toLocaleString("es-AR")} kg vs sem ${base.sem} (${base.kg})`, cls:"down" };
-  return { txt:`➖ Igual que la base (${base.kg} kg)`, cls:"" };
+  if (isNaN(x)) return { txt:"", full:"", cls:"" };
+  const d = Math.round((x - base.kg) * 100) / 100;
+  if (d > 0) return { txt:`⬆️ +${fmt(d)}`, full:`Subiste ${fmt(d)} kg vs sem ${base.sem} (${fmt(base.kg)})`, cls:"up" };
+  if (d < 0) return { txt:`⚠️ −${fmt(Math.abs(d))}`, full:`Bajaste ${fmt(Math.abs(d))} kg vs sem ${base.sem} (${fmt(base.kg)})`, cls:"down" };
+  return { txt:`➖ =${fmt(base.kg)}`, full:`Igual que la base (${fmt(base.kg)} kg)`, cls:"same" };
 }
 function cmpId(id){ return "cmp-" + id.replace(/[^a-z0-9]/gi, "_"); }
+function updateAnillo(){
+  const F = FASES[iFase], D = DIAS[dia];
+  const ejDia = EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")));
+  const conCarga = ejDia.filter(e => { const g = st[`${e.n}.s${semana}`]; return g && ((g.kg||"").trim() || (g.reps||"").trim()); }).length;
+  const pct = ejDia.length ? (conCarga / ejDia.length) * 100 : 0;
+  $("anillo").style.background = `conic-gradient(${D.c} 0 ${pct}%, var(--anilloTrack) ${pct}% 100%)`;
+  $("anilloTxt").textContent = `${conCarga}/${ejDia.length}`;
+}
 function setVal(id, campo, v){
   st[kOf(id)] = st[kOf(id)] || {}; st[kOf(id)][campo] = v; save();
   if (campo === "kg") {
     const c = $(cmpId(id));
-    if (c) { const t = textoCmp(id, v); c.textContent = t.txt; c.className = "cmp " + t.cls; }
+    if (c) { const t = textoCmp(id, v); c.textContent = t.txt; c.className = "delta " + t.cls; c.title = t.full; c.style.display = t.txt ? "" : "none"; }
   }
+  updateAnillo();
   const g = $("guardado"); g.classList.add("ver");
   clearTimeout(window._t); window._t = setTimeout(()=>g.classList.remove("ver"), 1200);
+}
+function paso(btn, delta){
+  const inp = btn.parentElement.querySelector("input");
+  const id = inp.dataset.ej;
+  const base = baseKg(id, semana);
+  let v;
+  if (inp.value.trim() === "") v = base ? base.kg : 20; // primer toque: deja la base lista
+  else v = Math.round((num(inp.value) + delta) * 100) / 100;
+  if (v < 0) v = 0;
+  inp.value = String(v).replace(".", ",");
+  setVal(id, "kg", inp.value);
+}
+function colorBloque(tit){
+  const o = oscuro();
+  if (tit.startsWith("Principal")) return o ? "rgba(255,217,102,.10)" : "#FFF2CC";
+  if (tit.startsWith("Prevención")) return o ? "rgba(224,102,102,.12)" : "#F4CCCC";
+  return o ? "rgba(246,178,107,.10)" : "#FCE5CD"; // superseries y bisagra
 }
 function setDia(d){ dia = d; render(); window.scrollTo(0,0); }
 function setSemana(s){ semana = s; st._semana = s; save(); render(); }
@@ -163,10 +211,11 @@ function setFase(i){
   save(); render();
 }
 function toggleTema(){
-  const oscuro = document.documentElement.dataset.tema === "oscuro";
-  document.documentElement.dataset.tema = oscuro ? "claro" : "oscuro";
+  const osc = oscuro();
+  document.documentElement.dataset.tema = osc ? "claro" : "oscuro";
   st._tema = document.documentElement.dataset.tema; save();
-  $("temaBtn").textContent = oscuro ? "🌙" : "☀️";
+  $("temaBtn").textContent = osc ? "🌙" : "☀️";
+  render();
 }
 function traerAnterior(){
   const prev = semana - 1; if (prev < 1) return alert("No hay semana anterior.");
@@ -192,46 +241,55 @@ function importar(ev){
 }
 function aplicarTema(){
   document.documentElement.dataset.tema = st._tema || "claro";
-  $("temaBtn").textContent = document.documentElement.dataset.tema === "oscuro" ? "☀️" : "🌙";
+  $("temaBtn").textContent = oscuro() ? "☀️" : "🌙";
 }
 function render(){
   const F = FASES[iFase];
   const otros = FASES[(iFase + 1) % FASES.length];
   const dOtros = datosEnFase(otros.id) > 0 ? `${datosEnFase(otros.id) === 1 ? "1 dato" : datosEnFase(otros.id) + " datos"}` : "sin datos";
+  const dFase = datosEnFase(F.id);
   $("faseLbl").textContent = F.n;
-  $("faseLbl").title = `${datosEnFase(F.id) === 1 ? "1 dato" : datosEnFase(F.id) + " datos"} cargados en ${F.n}`;
+  $("faseLbl").title = `${dFase === 1 ? "1 dato" : dFase + " datos"} cargados en ${F.n}`;
+  $("faseTag").textContent = dFase === 0 ? "sin datos" : `${dFase === 1 ? "1 dato" : dFase + " datos"}`;
   $("fasePrev").title = `Ir a ${otros.n} (${dOtros})`;
   $("faseNext").title = `Ir a ${otros.n} (${dOtros})`;
   $("semanas").innerHTML = F.sems.map(s =>
-    `<button class="chip semana ${s===semana?"on":""}" onclick="setSemana(${s})">Sem ${s}</button>`).join("");
+    `<button class="sem ${s===semana?"on":""}" onclick="setSemana(${s})">Sem ${s}</button>`).join("");
   const D = DIAS[dia];
-  const fondoBloque = document.documentElement.dataset.tema === "oscuro" ? D.lOscuro : D.lClaro;
-  let html = `<div class="dia-tabs">` + Object.keys(DIAS).map(d =>
-    `<button class="dia-tab" style="background:${DIAS[d].c}" onclick="setDia('${d}')" title="${DIAS[d].titulo}">${DIAS[d].n}</button>`).join("") + `</div>`;
+  $("titDia").textContent = D.n + " 💪";
+  $("subDia").textContent = D.titulo.split("·").slice(1).join("·").trim() + " · " + F.n;
+  updateAnillo();
+  let html = `<div class="dia-tabs">` + Object.keys(DIAS).map(d => {
+    const DD = DIAS[d];
+    return `<button class="dia-tab ${d===dia?"on":""}" style="--c:${DD.c};--cc:${oscuro()?DD.lOscuro:DD.lClaro}" onclick="setDia('${d}')" title="${DD.titulo}">${DD.n}</button>`;
+  }).join("") + `</div>`;
   if (semana === 1) html += `<div class="aviso">🟡 Semana 1: hacé solo <b>2 series por ejercicio</b>.</div>`;
   if (dia === "B" && F.id !== "f1") html += `<div class="aviso">🟠 Antes del hip thrust: escalón de bisagra 3 × 5 liviano. Subís de escalón tras 3 sesiones con buena técnica y sin molestar la lumbar.</div>`;
   if (F.id === "f3") html += `<div class="aviso">🔴 Arranca el 2do mes: si cambiaste ejercicios en el código, arrancás con los campos vacíos. Si todo subió bien, en la semana 7 entra el desarrollo (y el día D).</div>`;
   let bloqueActual = null;
-  for (const e of EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")))) {
+  const ejDia = EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")));
+  for (const e of ejDia) {
     if (e.b !== bloqueActual) {
       bloqueActual = e.b;
       const [tit, meta] = e.b.split("|");
-      html += `<div class="bloque" style="background:${fondoBloque}"><h2>${tit}<span class="meta">${meta||""}</span></h2>`;
+      html += `<div class="bloque" style="background:${colorBloque(tit)}"><h2>${tit}<span class="meta">${meta||""}</span></h2>`;
     }
     const guardado = st[kOf(e.n)] || {};
     const base = baseKg(e.n, semana);
     const t = textoCmp(e.n, guardado.kg || "");
     html += `<div class="ej">
-      <div class="ej-top"><a href="${e.u}" target="_blank">${e.n}</a><span class="target">${e.t[F.id]}</span></div>
-      <div class="inputs">
-        <label>Kg${base ? ` <span style="opacity:.7">(base: ${base.kg})</span>` : ""}
-          <input type="text" inputmode="decimal" placeholder="${base ? base.kg : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
-        </label>
-        <label>Reps
-          <input type="text" inputmode="numeric" placeholder="${(e.t[F.id].split("×")[1]||"").replace("por lado","").replace("por pierna","").trim()}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
-        </label>
+      <div class="fila1">
+        <a href="${e.u}" target="_blank">${e.n}</a>
+        <span class="delta ${t.cls}" id="${cmpId(e.n)}" title="${t.full}" ${t.txt?"":'style="display:none"'}>${t.txt}</span>
       </div>
-      <div class="cmp ${t.cls}" id="${cmpId(e.n)}">${t.txt}</div>
+      <div class="fila2">
+        <div class="stepper">
+          <button onclick="paso(this,-2.5)">−</button>
+          <input type="text" inputmode="decimal" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? fmt(base.kg) : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
+          <button onclick="paso(this,2.5)">+</button>
+        </div>
+        <input class="reps" type="text" inputmode="numeric" placeholder="${(e.t[F.id].split("×")[1]||"").replace("por lado","").replace("por pierna","").trim()}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
+      </div>
     </div>`;
   }
   html += `</div>`;
