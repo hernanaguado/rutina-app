@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Mi rutina</title>
+<style>
+  :root { --gris:#f5f5f5; --texto:#222; --borde:#ddd; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; font-family:system-ui,-apple-system,sans-serif; color:var(--texto); background:#fff; padding-bottom:80px; }
+  header { padding:12px 16px; position:sticky; top:0; background:#fff; z-index:10; border-bottom:1px solid var(--borde); }
+  h1 { font-size:18px; margin:0 0 8px; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .chip { border:1px solid var(--borde); background:#fff; border-radius:20px; padding:6px 13px; font-size:14px; cursor:pointer; }
+  .chip.on { background:#222; color:#fff; border-color:#222; }
+  .chip.semana.on { background:#e06666; border-color:#e06666; }
+  main { padding:10px 12px; }
+  .dia-tabs { display:flex; gap:8px; margin-bottom:10px; }
+  .dia-tab { flex:1; border:none; border-radius:10px; padding:10px 0; font-size:15px; font-weight:700; cursor:pointer; }
+  .bloque { border-radius:12px; padding:10px 12px; margin-bottom:12px; border:1px solid var(--borde); }
+  .bloque h2 { font-size:13px; margin:0 0 8px; font-weight:700; }
+  .bloque .meta { font-weight:400; color:#555; display:block; font-size:12px; margin-top:2px; }
+  .ej { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:8px 10px; margin-bottom:8px; }
+  .ej-top { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .ej a { color:#0563c1; text-decoration:none; font-weight:600; font-size:14px; }
+  .ej .target { font-size:12px; color:#666; white-space:nowrap; }
+  .inputs { display:flex; gap:8px; margin-top:8px; align-items:center; }
+  .inputs label { font-size:12px; color:#666; display:flex; flex-direction:column; gap:2px; flex:1; }
+  .inputs input { width:100%; border:1px solid var(--borde); border-radius:8px; padding:8px; font-size:16px; background:#fafafa; }
+  .inputs input:focus { outline:2px solid #ffb74d; background:#fff; }
+  .guardado { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#2e7d32; color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; }
+  .guardado.ver { opacity:1; }
+  .acciones { display:flex; gap:8px; padding:8px 12px; }
+  .acciones button { flex:1; border:1px solid var(--borde); background:#fff; border-radius:10px; padding:9px 0; font-size:13px; cursor:pointer; }
+  .aviso { background:#fff8e1; border:1px solid #ffd54f; border-radius:10px; padding:8px 12px; font-size:13px; margin-bottom:10px; }
+  .pie { font-size:12px; color:#777; padding:0 16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>💪 Mi rutina</h1>
+  <div class="chips">
+    <button class="chip" id="fasePrev">‹</button>
+    <span class="chip on" id="faseLbl" style="cursor:default"></span>
+    <button class="chip" id="faseNext">›</button>
+    <span style="width:8px"></span>
+    <span id="semanas" class="chips"></span>
+  </div>
+</header>
+<div class="acciones">
+  <button onclick="traerAnterior()">⤵ Traer semana anterior</button>
+  <button onclick="exportar()">⬇ Respaldo</button>
+  <button onclick="document.getElementById('imp').click()">⬆ Cargar</button>
+  <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
+</div>
+<main id="app"></main>
+<p class="pie">Tocá el nombre del ejercicio para ver el video. Los datos se guardan solos en este celular.</p>
+<div class="guardado" id="guardado">Guardado ✓</div>
+
+<script>
+const EJ = [
+  // DÍA A
+  {d:"A", b:"Principal|2-3 min de descanso", n:"Prensa de piernas", u:"https://www.youtube.com/watch?v=bNsrqXUIJqc", t:{f1:"3 × 10",f2:"4 × 6"}},
+  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1A · Press de banca con mancuernas", u:"https://www.youtube.com/watch?v=TAH8RxOS0VI", t:{f1:"3 × 10",f2:"4 × 6"}},
+  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1B · Remo a una mano en el banco", u:"https://www.youtube.com/watch?v=Pkr1WW3p05A", t:{f1:"3 × 10 por lado",f2:"3 × 8-12 por lado"}},
+  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2A · Jalón al pecho", u:"https://www.youtube.com/watch?v=72q0tKij5uU", t:{f1:"3 × 10",f2:"3 × 8-12"}},
+  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2B · Elevaciones laterales", u:"https://www.youtube.com/watch?v=hgLpdwMtEEs", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Aductores en máquina", u:"https://www.youtube.com/watch?v=9EuO_mMQ3i8", t:{f1:"2 × 12",f2:"2 × 12-15"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Dead bug", u:"https://www.youtube.com/watch?v=XkTtXA3-IqU", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo de pie", u:"https://www.youtube.com/watch?v=R9eS_1An8L0", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  // DÍA B
+  {d:"B", b:"Escalón de bisagra|3 × 5 liviano, al inicio (solo sem 3-6)", f:"f2", n:"Escalón 1 · Peso muerto con kettlebell", u:"https://www.youtube.com/watch?v=Jc9KDxhc_68", t:{f2:"3 × 5"}},
+  {d:"B", b:"Principal|2-3 min de descanso", n:"Hip thrust", u:"https://www.youtube.com/watch?v=14wE63cK26I", t:{f1:"3 × 10",f2:"4 × 6"}},
+  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1A · Dominadas asistidas", u:"https://www.youtube.com/watch?v=lgE47t3dr2Q", t:{f1:"3 × 8",f2:"4 × 6"}},
+  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1B · Pájaros con mancuernas", u:"https://www.youtube.com/watch?v=24z3h_bZ7Zo", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2A · Press inclinado con mancuernas", u:"https://www.youtube.com/watch?v=qhKStczz27Q", t:{f1:"3 × 10",f2:"3 × 8-12"}},
+  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2B · Curl inclinado", u:"https://www.youtube.com/watch?v=ZY19YNmm7tQ", t:{f1:"3 × 10",f2:"3 × 10-12"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha Copenhague corta (rodilla)", u:"https://www.youtube.com/watch?v=QBweBJRxmrY", t:{f1:"3 × 15 s por lado",f2:"3 × 20-30 s por lado"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Pallof press en polea", u:"https://www.youtube.com/watch?v=o_CxFP4FJhA", t:{f1:"3 × 10 por lado",f2:"3 × 12 por lado"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo sentado en máquina (sóleo)", u:"https://www.youtube.com/watch?v=rfkYC-mbQus", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  // DÍA C
+  {d:"C", b:"Principal|2-3 min de descanso", n:"Sentadilla búlgara con mancuernas", u:"https://www.youtube.com/watch?v=Xfa3Ql_NwmE", t:{f1:"3 × 10 por pierna",f2:"4 × 6-8 por pierna"}},
+  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1A · Press de hombro sentado con mancuernas", u:"https://www.youtube.com/watch?v=GELRUlUSxeI", t:{f1:"3 × 10",f2:"4 × 6"}},
+  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1B · Curl martillo", u:"https://www.youtube.com/watch?v=9fcdEnbcm10", t:{f1:"3 × 10",f2:"3 × 10-12"}},
+  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2A · Curl femoral en máquina", u:"https://www.youtube.com/watch?v=H_ADCsf0JOw", t:{f1:"3 × 10",f2:"3 × 10-12"}},
+  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2B · Extensión de tríceps sobre la cabeza", u:"https://www.youtube.com/watch?v=fQ-KB40W3d8", t:{f1:"3 × 10",f2:"3 × 10-15"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha lateral", u:"https://www.youtube.com/watch?v=bRivOELQVOs", t:{f1:"3 × 20 s por lado",f2:"3 × 30-45 s por lado"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Bird dog", u:"https://www.youtube.com/watch?v=O1HWwhYmQGE", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Elevación de tibial contra la pared", u:"https://www.youtube.com/watch?v=UVh1ztx8kZI", t:{f1:"2 × 15",f2:"2 × 20"}},
+];
+const DIAS = {
+  A:{n:"Día A · Prensa + empuje", c:"#ffd966", l:"#fff2cc"},
+  B:{n:"Día B · Cadera + tirón", c:"#f6b26b", l:"#fce5cd"},
+  C:{n:"Día C · Unilateral + hombro", c:"#e06666", l:"#f4cccc"},
+};
+const FASES = [{id:"f1", n:"Semanas 1-2", sems:[1,2]}, {id:"f2", n:"Semanas 3-6", sems:[3,4,5,6]}];
+const KEY = "rutina.v1";
+let st = JSON.parse(localStorage.getItem(KEY) || "{}");
+let iFase = st._fase ? FASES.findIndex(f=>f.id===st._fase) : 0; if (iFase<0) iFase=0;
+let semana = st._semana || FASES[iFase].sems[0];
+let dia = "A";
+const $ = id => document.getElementById(id);
+const save = () => localStorage.setItem(KEY, JSON.stringify(st));
+const kOf = (id) => `${id}.s${semana}`;
+function val(id, campo){ return (st[kOf(id)] || {})[campo] || ""; }
+
+function render(){
+  const F = FASES[iFase];
+  st._fase = F.id; st._semana = semana;
+  $("faseLbl").textContent = F.n;
+  $("semanas").innerHTML = F.sems.map(s =>
+    `<button class="chip semana ${s===semana?"on":""}" onclick="setSemana(${s})">Sem ${s}</button>`).join("");
+  let html = `<div class="dia-tabs">` + Object.keys(DIAS).map(d =>
+    `<button class="dia-tab" style="background:${DIAS[d].c}" onclick="setDia('${d}')">${d}</button>`).join("") + `</div>`;
+  if (semana === 1) html += `<div class="aviso">🟡 Semana 1: hacé solo <b>2 series por ejercicio</b>.</div>`;
+  if (dia === "B" && F.id === "f2") html += `<div class="aviso">🟠 Antes del hip thrust: escalón de bisagra 3 × 5 liviano. Subís de escalón tras 3 sesiones con buena técnica y sin molestar la lumbar.</div>`;
+  let bloqueActual = null;
+  for (const e of EJ.filter(x => x.d === dia && (!x.f || x.f === F.id))) {
+    if (e.b !== bloqueActual) {
+      bloqueActual = e.b;
+      const [tit, meta] = e.b.split("|");
+      html += `<div class="bloque" style="background:${DIAS[dia].l}"><h2>${tit}<span class="meta">${meta||""}</span></h2>`;
+    }
+    html += `<div class="ej">
+      <div class="ej-top"><a href="${e.u}" target="_blank">${e.n}</a><span class="target">${e.t[F.id]}</span></div>
+      <div class="inputs">
+        <label>Kg<input type="text" inputmode="decimal" value="${val(e.id||e.n,"kg")}" oninput="setVal('${(e.id||e.n).replace(/'/g,"\\'")}','kg',this.value)"></label>
+        <label>Reps<input type="text" inputmode="numeric" value="${val(e.id||e.n,"reps")}" oninput="setVal('${(e.id||e.n).replace(/'/g,"\\'")}','reps',this.value)"></label>
+      </div>
+    </div>`;
+  }
+  html += `</div>`;
+  $("app").innerHTML = html;
+}
+function setVal(id, campo, v){
+  st[kOf(id)] = st[kOf(id)] || {}; st[kOf(id)][campo] = v; save();
+  const g = $("guardado"); g.classList.add("ver");
+  clearTimeout(window._t); window._t = setTimeout(()=>g.classList.remove("ver"), 1200);
+}
+function setDia(d){ dia = d; render(); window.scrollTo(0,0); }
+function setSemana(s){ semana = s; save(); render(); }
+function traerAnterior(){
+  const prev = semana - 1; if (prev < 1) return alert("No hay semana anterior.");
+  let n = 0;
+  for (const e of EJ) for (const c of ["kg","reps"]) {
+    const origen = st[`${e.id||e.n}.s${prev}`];
+    if (origen && origen[c] !== undefined && origen[c] !== "") {
+      st[kOf(e.id||e.n)] = st[kOf(e.id||e.n)] || {}; st[kOf(e.id||e.n)][c] = origen[c]; n++;
+    }
+  }
+  save(); render(); alert(`Copié ${n} datos de la semana ${prev}.`);
+}
+function exportar(){
+  const a = document.createElement("a");
+  a.href = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(st, null, 1));
+  a.download = "rutina-respaldo.json"; a.click();
+}
+function importar(ev){
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { try { st = JSON.parse(r.result); save(); render(); alert("Respaldo cargado ✓"); } catch(e){ alert("Archivo inválido"); } };
+  r.readAsText(f); ev.target.value = "";
+}
+render();
+</script>
+</body>
+</html>
