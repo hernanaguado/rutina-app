@@ -95,7 +95,7 @@
   <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
 </header>
 <main id="app"></main>
-<p class="pie">Tocá el nombre del ejercicio para ver el video. Lo gris con "(sem ant)" es lo que hiciste la semana anterior: tocá + para confirmar el peso. 💾 descarga y restaura respaldos. Todo se guarda solo en este celular.</p>
+<p class="pie">Tocá el nombre para ver el video. Si cambiás el peso entre series, escribilos separados con / (ej: 40/40/42,5). Lo gris con "(sem ant)" es lo de la semana anterior: tocá + para confirmarlo. 💾 respalda y restaura todo.</p>
 <div class="guardado" id="guardado">Guardado ✓</div>
 
 <script>
@@ -151,6 +151,7 @@ const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const kOf = id => `${id}.s${semana}`;
 const num = v => parseFloat(String(v).replace(",", "."));
 const fmt = v => v.toLocaleString("es-AR");
+const seriesKg = v => String(v||"").split("/").map(x => num(x.trim())).filter(x => !isNaN(x) && x > 0); // "40/42,5" → [40, 42.5]
 const oscuro = () => document.documentElement.dataset.tema === "oscuro";
 function datosEnFase(f){
   const F = FASES.find(x=>x.id===f); let n = 0;
@@ -162,19 +163,26 @@ function datosEnFase(f){
 function baseKg(id, s){
   if (s % 4 === 1) return null; // arranque de mes: arrancás vacío
   const d = st[`${id}.s${s-1}`];
-  if (d && num(d.kg) > 0) return { sem: s-1, kg: num(d.kg) };
+  if (d && (d.kg||"").trim() && seriesKg(d.kg).length) return { sem: s-1, kg: String(d.kg).trim() };
   return null;
 }
 function textoCmp(id, v){
   const base = baseKg(id, semana);
   if (!base) return { txt:"", full:"", cls:"" };
-  if (v === "" || v === null) return { txt:"", full:`Base sem ${base.sem}: ${fmt(base.kg)} kg`, cls:"" };
-  const x = num(v);
-  if (isNaN(x)) return { txt:"", full:"", cls:"" };
-  const d = Math.round((x - base.kg) * 100) / 100;
-  if (d > 0) return { txt:`⬆️ +${fmt(d)}`, full:`Subiste ${fmt(d)} kg vs sem ${base.sem} (${fmt(base.kg)})`, cls:"up" };
-  if (d < 0) return { txt:`⚠️ −${fmt(Math.abs(d))}`, full:`Bajaste ${fmt(Math.abs(d))} kg vs sem ${base.sem} (${fmt(base.kg)})`, cls:"down" };
-  return { txt:`➖ =${fmt(base.kg)}`, full:`Igual que la base (${fmt(base.kg)} kg)`, cls:"same" };
+  const acts = seriesKg(v), ants = seriesKg(base.kg);
+  if (!acts.length) return { txt:"", full:`Base sem ${base.sem}: ${base.kg} kg`, cls:"" };
+  if (!ants.length) return { txt:"", full:"", cls:"" };
+  const full = `Serie a serie vs sem ${base.sem}: ${base.kg} → ${String(v).trim()} kg`;
+  let sube = 0, baja = 0;
+  const n = Math.min(acts.length, ants.length);
+  for (let i = 0; i < n; i++) {
+    const d = Math.round((acts[i] - ants[i]) * 100) / 100;
+    if (d > sube) sube = d;
+    if (d < baja) baja = d;
+  }
+  if (baja < 0) return { txt:`⚠️ −${fmt(Math.abs(baja))}`, full, cls:"down" };
+  if (sube > 0) return { txt:`⬆️ +${fmt(sube)}`, full, cls:"up" };
+  return { txt:`➖ =${fmt(ants[0])}`, full, cls:"same" };
 }
 function cmpId(id){ return "cmp-" + id.replace(/[^a-z0-9]/gi, "_"); }
 function updateAnillo(){
@@ -198,12 +206,16 @@ function setVal(id, campo, v){
 function paso(btn, delta){
   const inp = btn.parentElement.querySelector("input");
   const id = inp.dataset.ej;
-  const base = baseKg(id, semana);
-  let v;
-  if (inp.value.trim() === "") v = base ? base.kg : 20; // primer toque: deja la base lista
-  else v = Math.round((num(inp.value) + delta) * 100) / 100;
-  if (v < 0) v = 0;
-  inp.value = String(v).replace(".", ",");
+  if (inp.value.trim() === "") { // primer toque: deja la base lista (todas las series de la sem ant)
+    inp.value = (baseKg(id, semana) || {kg:"20"}).kg;
+    setVal(id, "kg", inp.value);
+    return;
+  }
+  inp.value = inp.value.split("/").map(x => { // sube/baja todas las series juntas
+    let n = num(x); if (isNaN(n)) n = 0;
+    n = Math.round((n + delta) * 100) / 100; if (n < 0) n = 0;
+    return String(n).replace(".", ",");
+  }).join("/");
   setVal(id, "kg", inp.value);
 }
 function colorBloque(tit){
@@ -301,7 +313,7 @@ function render(){
       <div class="fila2">
         <div class="stepper">
           <button onclick="paso(this,-2.5)">−</button>
-          <input type="text" inputmode="decimal" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? `${fmt(base.kg)} (sem ant)` : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
+          <input type="text" autocomplete="off" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? `${base.kg} (sem ant)` : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
           <button onclick="paso(this,2.5)">+</button>
         </div>
         <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
