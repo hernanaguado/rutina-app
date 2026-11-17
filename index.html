@@ -46,6 +46,7 @@
   .aviso { background:#fff8e1; border:1px solid #ffd54f; border-radius:10px; padding:8px 12px; font-size:13px; margin-bottom:10px; color:#5d4037; }
   [data-tema="oscuro"] .aviso { background:rgba(255,213,79,.1); color:#ffd54f; }
   .pie { font-size:12px; color:var(--suave); padding:0 16px; }
+  .mini { border:1px solid var(--borde); background:var(--card); color:var(--texto); border-radius:8px; padding:2px 8px; font-size:12px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -63,6 +64,7 @@
   <button onclick="traerAnterior()">⤵ Traer semana anterior</button>
   <button onclick="exportar()">⬇ Respaldo</button>
   <button onclick="document.getElementById('imp').click()">⬆ Cargar</button>
+  <button onclick="toggleEdit()" id="editBtn">✏️ Editar</button>
   <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
 </div>
 <main id="app"></main>
@@ -72,40 +74,40 @@
 <script>
 const EJ = [
   // DÍA A
-  {d:"A", b:"Principal|2-3 min de descanso", n:"Prensa de piernas", u:"https://www.youtube.com/watch?v=bNsrqXUIJqc", t:{f1:"3 × 10",f2:"4 × 6"}},
-  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1A · Press de banca con mancuernas", u:"https://www.youtube.com/watch?v=TAH8RxOS0VI", t:{f1:"3 × 10",f2:"4 × 6"}},
-  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1B · Remo a una mano en el banco", u:"https://www.youtube.com/watch?v=Pkr1WW3p05A", t:{f1:"3 × 10 por lado",f2:"3 × 8-12 por lado"}},
-  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2A · Jalón al pecho", u:"https://www.youtube.com/watch?v=72q0tKij5uU", t:{f1:"3 × 10",f2:"3 × 8-12"}},
-  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2B · Elevaciones laterales", u:"https://www.youtube.com/watch?v=hgLpdwMtEEs", t:{f1:"3 × 12",f2:"3 × 12-15"}},
-  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Aductores en máquina", u:"https://www.youtube.com/watch?v=9EuO_mMQ3i8", t:{f1:"2 × 12",f2:"2 × 12-15"}},
-  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Dead bug", u:"https://www.youtube.com/watch?v=XkTtXA3-IqU", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado"}},
-  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo de pie", u:"https://www.youtube.com/watch?v=R9eS_1An8L0", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  {d:"A", b:"Principal|2-3 min de descanso", n:"Prensa de piernas", u:"https://www.youtube.com/watch?v=bNsrqXUIJqc", t:{f1:"3 × 10",f2:"4 × 6", f3:"4 × 6"}},
+  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1A · Press de banca con mancuernas", u:"https://www.youtube.com/watch?v=TAH8RxOS0VI", t:{f1:"3 × 10",f2:"4 × 6", f3:"4 × 6"}},
+  {d:"A", b:"Superserie 1 · banco|90 s al cerrar el par", n:"1B · Remo a una mano en el banco", u:"https://www.youtube.com/watch?v=Pkr1WW3p05A", t:{f1:"3 × 10 por lado",f2:"3 × 8-12 por lado", f3:"3 × 8-12 por lado"}},
+  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2A · Jalón al pecho", u:"https://www.youtube.com/watch?v=72q0tKij5uU", t:{f1:"3 × 10",f2:"3 × 8-12", f3:"3 × 8-12"}},
+  {d:"A", b:"Superserie 2 · jalón|90 s al cerrar el par", n:"2B · Elevaciones laterales", u:"https://www.youtube.com/watch?v=hgLpdwMtEEs", t:{f1:"3 × 12",f2:"3 × 12-15", f3:"3 × 12-15"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Aductores en máquina", u:"https://www.youtube.com/watch?v=9EuO_mMQ3i8", t:{f1:"2 × 12",f2:"2 × 12-15", f3:"2 × 12-15"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Dead bug", u:"https://www.youtube.com/watch?v=XkTtXA3-IqU", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado", f3:"3 × 10 por lado"}},
+  {d:"A", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo de pie", u:"https://www.youtube.com/watch?v=R9eS_1An8L0", t:{f1:"3 × 12",f2:"3 × 12-15", f3:"3 × 12-15"}},
   // DÍA B
-  {d:"B", b:"Escalón de bisagra|3 × 5 liviano, al inicio (solo sem 3-6)", f:"f2", n:"Escalón 1 · Peso muerto con kettlebell", u:"https://www.youtube.com/watch?v=Jc9KDxhc_68", t:{f2:"3 × 5"}},
-  {d:"B", b:"Principal|2-3 min de descanso", n:"Hip thrust", u:"https://www.youtube.com/watch?v=14wE63cK26I", t:{f1:"3 × 10",f2:"4 × 6"}},
-  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1A · Dominadas asistidas", u:"https://www.youtube.com/watch?v=lgE47t3dr2Q", t:{f1:"3 × 8",f2:"4 × 6"}},
-  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1B · Pájaros con mancuernas", u:"https://www.youtube.com/watch?v=24z3h_bZ7Zo", t:{f1:"3 × 12",f2:"3 × 12-15"}},
-  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2A · Press inclinado con mancuernas", u:"https://www.youtube.com/watch?v=qhKStczz27Q", t:{f1:"3 × 10",f2:"3 × 8-12"}},
-  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2B · Curl inclinado", u:"https://www.youtube.com/watch?v=ZY19YNmm7tQ", t:{f1:"3 × 10",f2:"3 × 10-12"}},
-  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha Copenhague corta (rodilla)", u:"https://www.youtube.com/watch?v=QBweBJRxmrY", t:{f1:"3 × 15 s por lado",f2:"3 × 20-30 s por lado"}},
-  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Pallof press en polea", u:"https://www.youtube.com/watch?v=o_CxFP4FJhA", t:{f1:"3 × 10 por lado",f2:"3 × 12 por lado"}},
-  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo sentado en máquina (sóleo)", u:"https://www.youtube.com/watch?v=rfkYC-mbQus", t:{f1:"3 × 12",f2:"3 × 12-15"}},
+  {d:"B", b:"Escalón de bisagra|3 × 5 liviano, al inicio (solo sem 3-6)", f:"f2", n:"Escalón 1 · Peso muerto con kettlebell", u:"https://www.youtube.com/watch?v=Jc9KDxhc_68", t:{f2:"3 × 5", f3:"3 × 5"}},
+  {d:"B", b:"Principal|2-3 min de descanso", n:"Hip thrust", u:"https://www.youtube.com/watch?v=14wE63cK26I", t:{f1:"3 × 10",f2:"4 × 6", f3:"4 × 6"}},
+  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1A · Dominadas asistidas", u:"https://www.youtube.com/watch?v=lgE47t3dr2Q", t:{f1:"3 × 8",f2:"4 × 6", f3:"4 × 6"}},
+  {d:"B", b:"Superserie 1|90 s al cerrar el par", n:"1B · Pájaros con mancuernas", u:"https://www.youtube.com/watch?v=24z3h_bZ7Zo", t:{f1:"3 × 12",f2:"3 × 12-15", f3:"3 × 12-15"}},
+  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2A · Press inclinado con mancuernas", u:"https://www.youtube.com/watch?v=qhKStczz27Q", t:{f1:"3 × 10",f2:"3 × 8-12", f3:"3 × 8-12"}},
+  {d:"B", b:"Superserie 2|90 s al cerrar el par", n:"2B · Curl inclinado", u:"https://www.youtube.com/watch?v=ZY19YNmm7tQ", t:{f1:"3 × 10",f2:"3 × 10-12", f3:"3 × 10-12"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha Copenhague corta (rodilla)", u:"https://www.youtube.com/watch?v=QBweBJRxmrY", t:{f1:"3 × 15 s por lado",f2:"3 × 20-30 s por lado", f3:"3 × 20-30 s por lado"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Pallof press en polea", u:"https://www.youtube.com/watch?v=o_CxFP4FJhA", t:{f1:"3 × 10 por lado",f2:"3 × 12 por lado", f3:"3 × 12 por lado"}},
+  {d:"B", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Gemelo sentado en máquina (sóleo)", u:"https://www.youtube.com/watch?v=rfkYC-mbQus", t:{f1:"3 × 12",f2:"3 × 12-15", f3:"3 × 12-15"}},
   // DÍA C
-  {d:"C", b:"Principal|2-3 min de descanso", n:"Sentadilla búlgara con mancuernas", u:"https://www.youtube.com/watch?v=Xfa3Ql_NwmE", t:{f1:"3 × 10 por pierna",f2:"4 × 6-8 por pierna"}},
-  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1A · Press de hombro sentado con mancuernas", u:"https://www.youtube.com/watch?v=GELRUlUSxeI", t:{f1:"3 × 10",f2:"4 × 6"}},
-  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1B · Curl martillo", u:"https://www.youtube.com/watch?v=9fcdEnbcm10", t:{f1:"3 × 10",f2:"3 × 10-12"}},
-  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2A · Curl femoral en máquina", u:"https://www.youtube.com/watch?v=H_ADCsf0JOw", t:{f1:"3 × 10",f2:"3 × 10-12"}},
-  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2B · Extensión de tríceps sobre la cabeza", u:"https://www.youtube.com/watch?v=fQ-KB40W3d8", t:{f1:"3 × 10",f2:"3 × 10-15"}},
-  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha lateral", u:"https://www.youtube.com/watch?v=bRivOELQVOs", t:{f1:"3 × 20 s por lado",f2:"3 × 30-45 s por lado"}},
-  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Bird dog", u:"https://www.youtube.com/watch?v=O1HWwhYmQGE", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado"}},
-  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Elevación de tibial contra la pared", u:"https://www.youtube.com/watch?v=UVh1ztx8kZI", t:{f1:"2 × 15",f2:"2 × 20"}},
+  {d:"C", b:"Principal|2-3 min de descanso", n:"Sentadilla búlgara con mancuernas", u:"https://www.youtube.com/watch?v=Xfa3Ql_NwmE", t:{f1:"3 × 10 por pierna",f2:"4 × 6-8 por pierna", f3:"4 × 6-8 por pierna"}},
+  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1A · Press de hombro sentado con mancuernas", u:"https://www.youtube.com/watch?v=GELRUlUSxeI", t:{f1:"3 × 10",f2:"4 × 6", f3:"4 × 6"}},
+  {d:"C", b:"Superserie 1|90 s al cerrar el par", n:"1B · Curl martillo", u:"https://www.youtube.com/watch?v=9fcdEnbcm10", t:{f1:"3 × 10",f2:"3 × 10-12", f3:"3 × 10-12"}},
+  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2A · Curl femoral en máquina", u:"https://www.youtube.com/watch?v=H_ADCsf0JOw", t:{f1:"3 × 10",f2:"3 × 10-12", f3:"3 × 10-12"}},
+  {d:"C", b:"Superserie 2|90 s al cerrar el par", n:"2B · Extensión de tríceps sobre la cabeza", u:"https://www.youtube.com/watch?v=fQ-KB40W3d8", t:{f1:"3 × 10",f2:"3 × 10-15", f3:"3 × 10-15"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Plancha lateral", u:"https://www.youtube.com/watch?v=bRivOELQVOs", t:{f1:"3 × 20 s por lado",f2:"3 × 30-45 s por lado", f3:"3 × 30-45 s por lado"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Bird dog", u:"https://www.youtube.com/watch?v=O1HWwhYmQGE", t:{f1:"3 × 8 por lado",f2:"3 × 10 por lado", f3:"3 × 10 por lado"}},
+  {d:"C", b:"Prevención · circuito|60 s al cerrar la ronda", n:"Elevación de tibial contra la pared", u:"https://www.youtube.com/watch?v=UVh1ztx8kZI", t:{f1:"2 × 15",f2:"2 × 20", f3:"2 × 20"}},
 ];
 const DIAS = {
   A:{n:"Día A", titulo:"Día A · Prensa + empuje", c:"#ffd966", lClaro:"#fff2cc", lOscuro:"rgba(255,217,102,.10)"},
   B:{n:"Día B", titulo:"Día B · Cadera + tirón", c:"#f6b26b", lClaro:"#fce5cd", lOscuro:"rgba(246,178,107,.10)"},
   C:{n:"Día C", titulo:"Día C · Unilateral + hombro", c:"#e06666", lClaro:"#f4cccc", lOscuro:"rgba(224,102,102,.12)"},
 };
-const FASES = [{id:"f1", n:"Semanas 1-2", sems:[1,2]}, {id:"f2", n:"Semanas 3-6", sems:[3,4,5,6]}];
+const FASES = [{id:"f1", n:"Semanas 1-2", sems:[1,2]}, {id:"f2", n:"Semanas 3-4", sems:[3,4]}, {id:"f3", n:"Semanas 5-6", sems:[5,6]}];
 const KEY = "rutina.v1";
 let st = JSON.parse(localStorage.getItem(KEY) || "{}");
 let iFase = st._fase ? FASES.findIndex(f=>f.id===st._fase) : 0; if (iFase<0) iFase=0;
@@ -190,7 +192,7 @@ function aplicarTema(){
 }
 function render(){
   const F = FASES[iFase];
-  const otros = FASES[1-iFase];
+  const otros = FASES[(iFase + 1) % FASES.length];
   const dOtros = datosEnFase(otros.id) > 0 ? `${datosEnFase(otros.id) === 1 ? "1 dato" : datosEnFase(otros.id) + " datos"}` : "sin datos";
   $("faseLbl").textContent = F.n;
   $("faseLbl").title = `${datosEnFase(F.id) === 1 ? "1 dato" : datosEnFase(F.id) + " datos"} cargados en ${F.n}`;
@@ -203,19 +205,26 @@ function render(){
   let html = `<div class="dia-tabs">` + Object.keys(DIAS).map(d =>
     `<button class="dia-tab" style="background:${DIAS[d].c}" onclick="setDia('${d}')" title="${DIAS[d].titulo}">${DIAS[d].n}</button>`).join("") + `</div>`;
   if (semana === 1) html += `<div class="aviso">🟡 Semana 1: hacé solo <b>2 series por ejercicio</b>.</div>`;
-  if (dia === "B" && F.id === "f2") html += `<div class="aviso">🟠 Antes del hip thrust: escalón de bisagra 3 × 5 liviano. Subís de escalón tras 3 sesiones con buena técnica y sin molestar la lumbar.</div>`;
+  if (dia === "B" && F.id !== "f1") html += `<div class="aviso">🟠 Antes del hip thrust: escalón de bisagra 3 × 5 liviano. Subís de escalón tras 3 sesiones con buena técnica y sin molestar la lumbar.</div>`;
+  if (F.id === "f3") html += `<div class="aviso">🔴 Cierre de bloque: si todo subió bien, en la semana 7 entra el desarrollo (y el día D). Es buen momento para cambiar ejercicios con el botón ✏️.</div>`;
   let bloqueActual = null;
-  for (const e of EJ.filter(x => x.d === dia && (!x.f || x.f === F.id))) {
+  for (const e of EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")))) {
     if (e.b !== bloqueActual) {
       bloqueActual = e.b;
       const [tit, meta] = e.b.split("|");
       html += `<div class="bloque" style="background:${fondoBloque}"><h2>${tit}<span class="meta">${meta||""}</span></h2>`;
     }
     const guardado = st[kOf(e.n)] || {};
+    const ov = (st._ov || {})[e.n] || {};
+    const nom = ov.n || e.n, url = ov.u || e.u;
     const base = baseKg(e.n, semana);
     const t = textoCmp(e.n, guardado.kg || "");
+    const editar = st._edit ? `<span style="display:flex;gap:4px">
+      <button class="mini" onclick="editarEj('${e.n.replace(/'/g,"\\'")}')">✎</button>
+      ${ov.n || ov.u ? `<button class="mini" onclick="restaurarEj('${e.n.replace(/'/g,"\\'")}')">↺</button>` : ""}
+    </span>` : "";
     html += `<div class="ej">
-      <div class="ej-top"><a href="${e.u}" target="_blank">${e.n}</a><span class="target">${e.t[F.id]}</span></div>
+      <div class="ej-top"><a href="${url}" target="_blank">${nom}</a><span style="display:flex;align-items:center;gap:8px">${editar}<span class="target">${e.t[F.id]}</span></span></div>
       <div class="inputs">
         <label>Kg${base ? ` <span style="opacity:.7">(base: ${base.kg})</span>` : ""}
           <input type="text" inputmode="decimal" placeholder="${base ? base.kg : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
@@ -229,6 +238,23 @@ function render(){
   }
   html += `</div>`;
   $("app").innerHTML = html;
+}
+function toggleEdit(){
+  st._edit = !st._edit; save(); render();
+}
+function editarEj(n){
+  const ov = st._ov = st._ov || {};
+  const actual = ov[n] || {};
+  const nn = prompt("Nombre del ejercicio:", actual.n || n);
+  if (nn === null) return;
+  const uu = prompt("Link del video de YouTube:", actual.u || EJ.find(x => x.n === n).u);
+  if (uu === null) return;
+  if (!nn.trim() && !uu.trim()) { delete ov[n]; }
+  else ov[n] = { n: nn.trim() || actual.n || n, u: uu.trim() || actual.u || EJ.find(x => x.n === n).u };
+  save(); render();
+}
+function restaurarEj(n){
+  if (st._ov) { delete st._ov[n]; save(); render(); }
 }
 aplicarTema();
 render();
