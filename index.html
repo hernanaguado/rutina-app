@@ -57,7 +57,8 @@
   .fila2 > * { min-width:0; }
   .seriePanel { display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0; }
   .serieNum { font-size:12px; font-weight:700; color:var(--suave); white-space:nowrap; flex-shrink:0; }
-  .serieNav { display:flex; flex-direction:column; align-items:center; gap:3px; margin-left:auto; }
+  .serieNav { display:flex; flex-direction:column; align-items:center; gap:2px; margin-left:auto; }
+  .serieNav .btns { display:flex; gap:5px; }
   .serieLabel { font-size:11px; font-weight:700; color:var(--suave); white-space:nowrap; }
   .btnSerie { border:1px solid var(--borde); background:var(--stepperBtn); color:var(--texto); border-radius:9px; padding:6px 8px; font-size:16px; font-weight:700; cursor:pointer; min-width:40px; text-align:center; white-space:nowrap; flex-shrink:0; }
   .btnSerie:active { background:var(--anilloTrack); }
@@ -400,8 +401,10 @@ function render(){
           <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${repsVal.replace(/"/g,"&quot;")}" oninput="setSerieVal('${e.n.replace(/'/g,"\\'")}',${s},'reps',this.value)" onkeydown="if(event.key==='Enter'){serieSiguiente('${e.n.replace(/'/g,"\\'")}');return false;}">
           <div class="serieNav">
             <span class="serieLabel">Serie</span>
-            <button class="btnSerie" onclick="serieAnterior('${e.n.replace(/'/g,"\\'")}')">←</button>
-            <button class="btnSerie" onclick="serieSiguiente('${e.n.replace(/'/g,"\\'")}')">→</button>
+            <div class="btns">
+              <button class="btnSerie" onclick="serieAnterior('${e.n.replace(/'/g,"\\'")}')">←</button>
+              <button class="btnSerie" onclick="serieSiguiente('${e.n.replace(/'/g,"\\'")}')">→</button>
+            </div>
           </div>
         </div>
       </div>
