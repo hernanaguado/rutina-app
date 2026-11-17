@@ -95,7 +95,7 @@
   <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
 </header>
 <main id="app"></main>
-<p class="pie">Tocá el nombre del ejercicio para ver el video. En gris te aparece lo que hiciste la semana anterior: tocá + para confirmar el peso, y las reps quedan de guía. 💾 descarga y restaura respaldos. Todo se guarda solo en este celular.</p>
+<p class="pie">Tocá el nombre del ejercicio para ver el video. Lo gris con "(sem ant)" es lo que hiciste la semana anterior: tocá + para confirmar el peso. 💾 descarga y restaura respaldos. Todo se guarda solo en este celular.</p>
 <div class="guardado" id="guardado">Guardado ✓</div>
 
 <script>
@@ -291,7 +291,7 @@ function render(){
     const t = textoCmp(e.n, guardado.kg || "");
     const prev = semana % 4 === 1 ? {} : (st[`${e.n}.s${semana-1}`] || {}); // arranque de mes: sin semana anterior
     const repsConsigna = (e.t[F.id].split("×")[1]||"").replace("por lado","").replace("por pierna","").trim();
-    const repsPh = String(prev.reps || "").trim() || repsConsigna;
+    const repsPh = String(prev.reps || "").trim() ? `${String(prev.reps).trim()} (sem ant)` : repsConsigna;
     html += `<div class="ej">
       <div class="fila1">
         <a href="${e.u}" target="_blank">${e.n}</a>
@@ -301,7 +301,7 @@ function render(){
       <div class="fila2">
         <div class="stepper">
           <button onclick="paso(this,-2.5)">−</button>
-          <input type="text" inputmode="decimal" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? fmt(base.kg) : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
+          <input type="text" inputmode="decimal" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? `${fmt(base.kg)} (sem ant)` : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
           <button onclick="paso(this,2.5)">+</button>
         </div>
         <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
