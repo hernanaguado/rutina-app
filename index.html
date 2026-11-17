@@ -57,10 +57,11 @@
   .fila2 > * { min-width:0; }
   .seriePanel { display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0; }
   .serieNum { font-size:12px; font-weight:700; color:var(--suave); white-space:nowrap; flex-shrink:0; }
-  .btnSerie { border:1px solid var(--borde); background:var(--stepperBtn); color:var(--texto); border-radius:9px; padding:6px 10px; font-size:13px; font-weight:700; cursor:pointer; min-width:52px; text-align:center; white-space:nowrap; flex-shrink:0; }
+  .serieNav { display:flex; flex-direction:column; align-items:center; gap:3px; margin-left:auto; }
+  .serieLabel { font-size:11px; font-weight:700; color:var(--suave); white-space:nowrap; }
+  .btnSerie { border:1px solid var(--borde); background:var(--stepperBtn); color:var(--texto); border-radius:9px; padding:6px 8px; font-size:16px; font-weight:700; cursor:pointer; min-width:40px; text-align:center; white-space:nowrap; flex-shrink:0; }
   .btnSerie:active { background:var(--anilloTrack); }
   .seriePanel input { flex:1; min-width:0; }
-  .serieLabel { font-size:11px; font-weight:700; color:var(--suave); margin-right:6px; white-space:nowrap; flex-shrink:0; }
   .serieRail { display:flex; gap:6px; margin-top:8px; }
   .sCell { flex:1; min-width:0; background:var(--anilloTrack); border-radius:9px; padding:4px 1px; text-align:center; overflow:hidden; }
   .sCell .n { display:block; font-size:9px; font-weight:800; color:var(--suave); line-height:1.3; }
@@ -390,7 +391,6 @@ function render(){
       </div>
       <div class="fila2">
         <div class="seriePanel">
-          <span class="serieLabel">Serie</span>
           <span class="serieNum">${s+1} de ${n}</span>
           <div class="stepper">
             <button onclick="paso(this,-2.5)">−</button>
@@ -398,8 +398,11 @@ function render(){
             <button onclick="paso(this,2.5)">+</button>
           </div>
           <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${repsVal.replace(/"/g,"&quot;")}" oninput="setSerieVal('${e.n.replace(/'/g,"\\'")}',${s},'reps',this.value)" onkeydown="if(event.key==='Enter'){serieSiguiente('${e.n.replace(/'/g,"\\'")}');return false;}">
-          <button class="btnSerie" onclick="serieAnterior('${e.n.replace(/'/g,"\\'")}')">Atrás ←</button>
-          <button class="btnSerie" onclick="serieSiguiente('${e.n.replace(/'/g,"\\'")}')">Siguiente →</button>
+          <div class="serieNav">
+            <span class="serieLabel">Serie</span>
+            <button class="btnSerie" onclick="serieAnterior('${e.n.replace(/'/g,"\\'")}')">←</button>
+            <button class="btnSerie" onclick="serieSiguiente('${e.n.replace(/'/g,"\\'")}')">→</button>
+          </div>
         </div>
       </div>
       <div class="serieRail" id="${railId(e.n)}">${railHTML(e.n)}</div>
