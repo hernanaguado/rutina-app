@@ -52,9 +52,9 @@
 <header>
   <h1><span>💪 Mi rutina</span><button class="chip" id="temaBtn" onclick="toggleTema()" title="Cambiar tema">🌙</button></h1>
   <div class="chips">
-    <button class="chip" id="fasePrev" title="">‹</button>
+    <button class="chip" id="fasePrev" title="" onclick="setFase(iFase-1)">‹</button>
     <span class="chip on" id="faseLbl" style="cursor:default"></span>
-    <button class="chip" id="faseNext" title="">›</button>
+    <button class="chip" id="faseNext" title="" onclick="setFase(iFase+1)">›</button>
     <span style="width:8px"></span>
     <span id="semanas" class="chips"></span>
   </div>
