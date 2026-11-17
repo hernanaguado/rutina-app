@@ -53,12 +53,19 @@
   .delta.down { background:rgba(179,89,0,.12); color:var(--alerta); }
   .delta.same { background:var(--anilloTrack); color:var(--suave); }
   .metaPill { font-size:11px; font-weight:700; color:var(--suave); background:var(--anilloTrack); padding:4px 8px; border-radius:8px; white-space:nowrap; }
-  .fila2 { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .fila2 { display:grid; grid-template-columns:1fr 104px; gap:8px; align-items:center; margin-top:8px; }
+  .fila2 > * { min-width:0; }
+  @media (max-width:380px) { .fila2 { grid-template-columns:1fr; } }
+  .serieRail { display:flex; gap:6px; margin-top:8px; }
+  .sCell { flex:1; min-width:0; background:var(--anilloTrack); border-radius:9px; padding:4px 1px; text-align:center; overflow:hidden; }
+  .sCell .n { display:block; font-size:9px; font-weight:800; color:var(--suave); line-height:1.3; }
+  .sCell .v { display:block; font-size:11px; font-weight:700; color:var(--texto); line-height:1.35; white-space:nowrap; }
+  .sCell .ph { color:var(--suave); font-weight:600; }
   .stepper { display:flex; align-items:center; gap:2px; background:var(--stepperBg); border-radius:11px; padding:4px; box-shadow:inset 0 0 0 1px var(--borde); flex:1; min-width:0; }
   .stepper button { width:38px; height:36px; border:none; border-radius:9px; background:var(--stepperBtn); color:var(--texto); font-size:18px; font-weight:700; cursor:pointer; }
   .stepper input { flex:1; min-width:0; text-align:center; border:none; background:transparent; font-size:17px; font-weight:700; color:var(--texto); }
   .stepper input::placeholder, .reps::placeholder { color:var(--inputPh); font-weight:500; }
-  .reps { width:64px; text-align:center; border:none; border-radius:11px; padding:10px 0; font-size:16px; font-weight:700; background:var(--inputBg); color:var(--inputFg); box-shadow:inset 0 0 0 1px var(--borde); flex-shrink:0; }
+  .reps { width:100%; text-align:center; border:none; border-radius:11px; padding:10px 0; font-size:16px; font-weight:700; background:var(--inputBg); color:var(--inputFg); box-shadow:inset 0 0 0 1px var(--borde); }
   input:focus { outline:2px solid #F6B26B; }
   .guardado { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:var(--verde); color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; }
   .guardado.ver { opacity:1; }
@@ -152,6 +159,8 @@ const kOf = id => `${id}.s${semana}`;
 const num = v => parseFloat(String(v).replace(",", "."));
 const fmt = v => v.toLocaleString("es-AR");
 const seriesKg = v => String(v||"").split("/").map(x => num(x.trim())).filter(x => !isNaN(x) && x > 0); // "40/42,5" → [40, 42.5]
+const EJMAP = Object.fromEntries(EJ.map(e => [e.n, e]));
+const partes = v => String(v||"").split("/").map(x => x.trim()).filter(x => x !== ""); // "40//42,5" → ["40","42,5"]
 const oscuro = () => document.documentElement.dataset.tema === "oscuro";
 function datosEnFase(f){
   const F = FASES.find(x=>x.id===f); let n = 0;
@@ -185,6 +194,29 @@ function textoCmp(id, v){
   return { txt:`➖ =${fmt(ants[0])}`, full, cls:"same" };
 }
 function cmpId(id){ return "cmp-" + id.replace(/[^a-z0-9]/gi, "_"); }
+function railId(id){ return "rail-" + id.replace(/[^a-z0-9]/gi, "_"); }
+function consignaDe(id){
+  const e = EJMAP[id]; if (!e) return { series:0, reps:"" };
+  const t = String(e.t[FASES[iFase].id] || "").split("×");
+  return { series: parseInt(t[0]) || 0, reps:(t[1]||"").replace("por lado","").replace("por pierna","").trim() };
+}
+function railHTML(id){
+  const g = st[kOf(id)] || {};
+  const kgP = partes(g.kg), repsP = partes(g.reps), cons = consignaDe(id);
+  const n = Math.max(cons.series, kgP.length, repsP.length);
+  if (!n) return "";
+  let h = "";
+  for (let i = 0; i < n; i++){
+    const kg = kgP[i], rp = repsP[i];
+    const kgH = kg !== undefined ? kg : '<span class="ph">—</span>';
+    const repsH = rp !== undefined ? rp : (cons.reps ? `<span class="ph">${cons.reps}</span>` : '<span class="ph">—</span>');
+    h += `<div class="sCell"><span class="n">${i+1}</span><span class="v">${kgH}×${repsH}</span></div>`;
+  }
+  return h;
+}
+function updateRail(id){
+  const el = $(railId(id)); if (el) el.innerHTML = railHTML(id);
+}
 function updateAnillo(){
   const F = FASES[iFase], D = DIAS[dia];
   const ejDia = EJ.filter(x => x.d === dia && (!x.f || (x.f === "f2" && F.id !== "f1")));
@@ -199,6 +231,7 @@ function setVal(id, campo, v){
     const c = $(cmpId(id));
     if (c) { const t = textoCmp(id, v); c.textContent = t.txt; c.className = "delta " + t.cls; c.title = t.full; c.style.display = t.txt ? "" : "none"; }
   }
+  updateRail(id);
   updateAnillo();
   const g = $("guardado"); g.classList.add("ver");
   clearTimeout(window._t); window._t = setTimeout(()=>g.classList.remove("ver"), 1200);
@@ -303,7 +336,9 @@ function render(){
     const t = textoCmp(e.n, guardado.kg || "");
     const prev = semana % 4 === 1 ? {} : (st[`${e.n}.s${semana-1}`] || {}); // arranque de mes: sin semana anterior
     const repsConsigna = (e.t[F.id].split("×")[1]||"").replace("por lado","").replace("por pierna","").trim();
-    const repsPh = String(prev.reps || "").trim() ? `${String(prev.reps).trim()} (sem ant)` : repsConsigna;
+    const nConsigna = parseInt(e.t[F.id].split("×")[0]) || 1;
+    const repsPrev = String(prev.reps || "").trim();
+    const repsPh = repsPrev ? `${repsPrev} (sem ant)` : Array(nConsigna).fill(repsConsigna).join("/");
     html += `<div class="ej">
       <div class="fila1">
         <a href="${e.u}" target="_blank">${e.n}</a>
@@ -317,6 +352,7 @@ function render(){
           <button onclick="paso(this,2.5)">+</button>
         </div>
         <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
+        <div class="serieRail" id="${railId(e.n)}">${railHTML(e.n)}</div>
       </div>
     </div>`;
   }
