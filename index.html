@@ -53,9 +53,13 @@
   .delta.down { background:rgba(179,89,0,.12); color:var(--alerta); }
   .delta.same { background:var(--anilloTrack); color:var(--suave); }
   .metaPill { font-size:11px; font-weight:700; color:var(--suave); background:var(--anilloTrack); padding:4px 8px; border-radius:8px; white-space:nowrap; }
-  .fila2 { display:grid; grid-template-columns:1fr 104px; gap:8px; align-items:center; margin-top:8px; }
+  .fila2 { display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap; }
   .fila2 > * { min-width:0; }
-  @media (max-width:380px) { .fila2 { grid-template-columns:1fr; } }
+  .seriePanel { display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0; }
+  .serieNum { font-size:12px; font-weight:700; color:var(--suave); white-space:nowrap; flex-shrink:0; }
+  .btnSerie { border:1px solid var(--borde); background:var(--stepperBtn); color:var(--texto); border-radius:9px; padding:6px 10px; font-size:13px; font-weight:700; cursor:pointer; min-width:52px; text-align:center; white-space:nowrap; flex-shrink:0; }
+  .btnSerie:active { background:var(--anilloTrack); }
+  .seriePanel input { flex:1; min-width:0; }
   .serieRail { display:flex; gap:6px; margin-top:8px; }
   .sCell { flex:1; min-width:0; background:var(--anilloTrack); border-radius:9px; padding:4px 1px; text-align:center; overflow:hidden; }
   .sCell .n { display:block; font-size:9px; font-weight:800; color:var(--suave); line-height:1.3; }
@@ -156,6 +160,28 @@ let dia = "A";
 const $ = id => document.getElementById(id);
 const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const kOf = id => `${id}.s${semana}`;
+const serieActiva = {}; // id -> índice de la serie que se está editando
+function serieIdx(id){ if (serieActiva[id] === undefined) serieActiva[id] = 0; return serieActiva[id]; }
+function serieSiguiente(id){ const n = Math.max(consignaDe(id).series, 1); serieActiva[id] = (serieActiva[id] + 1) % n; render(); }
+function serieAnterior(id){ const n = Math.max(consignaDe(id).series, 1); serieActiva[id] = (serieActiva[id] - 1 + n) % n; render(); }
+function setSerieVal(id, idx, campo, v){
+  const g = st[kOf(id)] = st[kOf(id)] || {};
+  g.series = g.series || [];
+  g.series[idx] = g.series[idx] || {};
+  g.series[idx][campo] = v || "";
+  const cons = consignaDe(id);
+  const n = Math.max(cons.series, g.series.length);
+  const arr = Array.from({length: n}, (_, i) => g.series[i] || {});
+  g.kg = arr.map(x => x.kg || "").join("/");
+  g.reps = arr.map(x => x.reps || "").join("/");
+  save();
+  updateRail(id);
+  const c = $(cmpId(id));
+  if (c){ const t = textoCmp(id, g.kg); c.textContent = t.txt; c.className = "delta " + t.cls; c.title = t.full; c.style.display = t.txt ? "" : "none"; }
+  updateAnillo();
+  const guardado = $("guardado"); guardado.classList.add("ver");
+  clearTimeout(window._t); window._t = setTimeout(()=>guardado.classList.remove("ver"), 1200);
+}
 const num = v => parseFloat(String(v).replace(",", "."));
 const fmt = v => v.toLocaleString("es-AR");
 const seriesKg = v => String(v||"").split("/").map(x => num(x.trim())).filter(x => !isNaN(x) && x > 0); // "40/42,5" → [40, 42.5]
@@ -200,6 +226,12 @@ function consignaDe(id){
   const t = String(e.t[FASES[iFase].id] || "").split("×");
   return { series: parseInt(t[0]) || 0, reps:(t[1]||"").replace("por lado","").replace("por pierna","").trim() };
 }
+function seriesDe(g){
+  if (g && g.series) return g.series;
+  const kgP = partes(g && g.kg), repsP = partes(g && g.reps);
+  const n = Math.max(kgP.length, repsP.length);
+  return Array.from({length:n}, (_, i) => ({ kg: kgP[i]||"", reps: repsP[i]||"" }));
+}
 function railHTML(id){
   const g = st[kOf(id)] || {};
   const kgP = partes(g.kg), repsP = partes(g.reps), cons = consignaDe(id);
@@ -239,17 +271,19 @@ function setVal(id, campo, v){
 function paso(btn, delta){
   const inp = btn.parentElement.querySelector("input");
   const id = inp.dataset.ej;
-  if (inp.value.trim() === "") { // primer toque: deja la base lista (todas las series de la sem ant)
-    inp.value = (baseKg(id, semana) || {kg:"20"}).kg;
-    setVal(id, "kg", inp.value);
-    return;
+  const s = serieIdx(id);
+  const g = st[kOf(id)] = st[kOf(id)] || {};
+  g.series = g.series || [];
+  const cur = g.series[s] || {};
+  let v = num(cur.kg);
+  if (isNaN(v)){
+    const base = baseKg(id, semana);
+    const bk = base ? seriesKg(base.kg) : [];
+    v = bk[s] !== undefined ? bk[s] : 20;
   }
-  inp.value = inp.value.split("/").map(x => { // sube/baja todas las series juntas
-    let n = num(x); if (isNaN(n)) n = 0;
-    n = Math.round((n + delta) * 100) / 100; if (n < 0) n = 0;
-    return String(n).replace(".", ",");
-  }).join("/");
-  setVal(id, "kg", inp.value);
+  v = Math.round((v + delta) * 100) / 100; if (v < 0) v = 0;
+  cur.kg = String(v).replace(".", ",");
+  setSerieVal(id, s, "kg", cur.kg);
 }
 function colorBloque(tit){
   const o = oscuro();
@@ -335,10 +369,17 @@ function render(){
     const base = baseKg(e.n, semana);
     const t = textoCmp(e.n, guardado.kg || "");
     const prev = semana % 4 === 1 ? {} : (st[`${e.n}.s${semana-1}`] || {}); // arranque de mes: sin semana anterior
-    const repsConsigna = (e.t[F.id].split("×")[1]||"").replace("por lado","").replace("por pierna","").trim();
-    const nConsigna = parseInt(e.t[F.id].split("×")[0]) || 1;
-    const repsPrev = String(prev.reps || "").trim();
-    const repsPh = repsPrev ? `${repsPrev} (sem ant)` : Array(nConsigna).fill(repsConsigna).join("/");
+    const cons = consignaDe(e.n);
+    const n = Math.max(cons.series, 1);
+    const s = serieIdx(e.n);
+    const series = seriesDe(guardado);
+    const cur = series[s] || {};
+    const kgVal = cur.kg || "";
+    const repsVal = cur.reps || "";
+    const prevSeries = seriesDe(prev);
+    const prevCur = prevSeries[s] || {};
+    const kgPh = prevCur.kg ? `${prevCur.kg} (sem ant)` : "";
+    const repsPh = prevCur.reps ? `${prevCur.reps} (sem ant)` : (cons.reps || "");
     html += `<div class="ej">
       <div class="fila1">
         <a href="${e.u}" target="_blank">${e.n}</a>
@@ -346,14 +387,19 @@ function render(){
         <span class="delta ${t.cls}" id="${cmpId(e.n)}" title="${t.full}" ${t.txt?"":'style="display:none"'}>${t.txt}</span>
       </div>
       <div class="fila2">
-        <div class="stepper">
-          <button onclick="paso(this,-2.5)">−</button>
-          <input type="text" autocomplete="off" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${base ? `${base.kg} (sem ant)` : ""}" value="${(guardado.kg||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','kg',this.value)">
-          <button onclick="paso(this,2.5)">+</button>
+        <div class="seriePanel">
+          <span class="serieNum">Serie ${s+1} de ${n}</span>
+          <div class="stepper">
+            <button onclick="paso(this,-2.5)">−</button>
+            <input type="text" autocomplete="off" data-ej="${e.n.replace(/"/g,"&quot;")}" placeholder="${kgPh}" value="${kgVal.replace(/"/g,"&quot;")}" oninput="setSerieVal('${e.n.replace(/'/g,"\\'")}',${s},'kg',this.value)">
+            <button onclick="paso(this,2.5)">+</button>
+          </div>
+          <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${repsVal.replace(/"/g,"&quot;")}" oninput="setSerieVal('${e.n.replace(/'/g,"\\'")}',${s},'reps',this.value)" onkeydown="if(event.key==='Enter'){serieSiguiente('${e.n.replace(/'/g,"\\'")}');return false;}">
+          <button class="btnSerie" onclick="serieAnterior('${e.n.replace(/'/g,"\\'")}')">←</button>
+          <button class="btnSerie" onclick="serieSiguiente('${e.n.replace(/'/g,"\\'")}')">Siguiente →</button>
         </div>
-        <input class="reps" type="text" inputmode="numeric" placeholder="${repsPh}" value="${(guardado.reps||"").replace(/"/g,"&quot;")}" oninput="setVal('${e.n.replace(/'/g,"\\'")}','reps',this.value)">
-        <div class="serieRail" id="${railId(e.n)}">${railHTML(e.n)}</div>
       </div>
+      <div class="serieRail" id="${railId(e.n)}">${railHTML(e.n)}</div>
     </div>`;
   }
   html += `</div>`;
