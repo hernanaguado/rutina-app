@@ -283,6 +283,7 @@ function paso(btn, delta){
   }
   v = Math.round((v + delta) * 100) / 100; if (v < 0) v = 0;
   cur.kg = String(v).replace(".", ",");
+  inp.value = cur.kg; // se ve en el input al toque
   setSerieVal(id, s, "kg", cur.kg);
 }
 function colorBloque(tit){
